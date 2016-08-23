@@ -6,6 +6,9 @@ config = {
     'author': 'Daniel Koster',
     'url': 'http://gitlab.intarweb.nl/pi-projects/argosd',
     'version': '0.1.0',
+    'data_files': [
+        ('/lib/systemd/system/', ['install/argosd.service']),
+    ],
 }
 
 setup(**config)

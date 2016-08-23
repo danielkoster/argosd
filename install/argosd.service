@@ -1,0 +1,9 @@
+[Unit]
+Description=ArgosD service
+After=network.target
+
+[Service]
+ExecStart=/var/workspace/argosd/.virtualenv/bin/python /var/workspace/argosd/argosd/argosd.py 
+PIDFile=/var/run/argosd.pid
+Restart=always
+RestartSec=30
