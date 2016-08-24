@@ -17,4 +17,4 @@ config = {
 setup(**config)
 
 # Make log directory world writable (777)
-os.chmod('/var/log/argosd', stat.S_IWOTH)
+os.chmod('/var/log/argosd', 0o777)
