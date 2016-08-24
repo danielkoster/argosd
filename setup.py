@@ -1,4 +1,5 @@
 from distutils.core import setup
+import os, stat
 
 config = {
     'name': 'argosd',
@@ -7,8 +8,12 @@ config = {
     'url': 'http://gitlab.intarweb.nl/pi-projects/argosd',
     'version': '0.1.0',
     'data_files': [
-        ('/lib/systemd/system/', ['install/argosd.service']),
+        ('/var/log/argosd', []),
+        ('/etc/systemd/system/', ['install/argosd.service']),
     ],
 }
 
 setup(**config)
+
+# Make log directory world writable (777)
+os.chmod('/var/log/argosd', stat.S_IWOTH)

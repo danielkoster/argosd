@@ -7,6 +7,7 @@ Daemon for Argos, a Python project to keep track of series on IPTorrents.
 ## Installation
 - Clone this repository
 - Create and activate a virtualenv
+- Create a "argosd" user and group on your system
 - Run `pip install -r requirements.txt`
 - Run `python setup.py install`
 

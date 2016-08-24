@@ -7,3 +7,5 @@ ExecStart=/var/workspace/argosd/.virtualenv/bin/python /var/workspace/argosd/arg
 PIDFile=/var/run/argosd.pid
 Restart=always
 RestartSec=30
+User=argosd
+Group=argosd
