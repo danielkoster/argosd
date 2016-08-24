@@ -17,7 +17,7 @@ class ArgosD:
                 # Run every 10 minutes
                 sleep(10 * 60)
             except KeyboardInterrupt:
-                self.logger.info('ArgosD stopping')
+                self.logger.info('ArgosD stopping, received KeyboardInterrupt')
                 sys.exit(0)
 
     def _check_series(self):
