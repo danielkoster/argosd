@@ -1,6 +1,5 @@
 from distutils.core import setup
 import os
-import stat
 
 config = {
     'name': 'argosd',
