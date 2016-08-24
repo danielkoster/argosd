@@ -2,6 +2,7 @@
 Daemon for Argos, a Python project to keep track of series on IPTorrents.
 
 ## Requirements
+- Account on IPTorrents
 - Python 3.2+
 
 ## Installation
