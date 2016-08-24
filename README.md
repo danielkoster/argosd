@@ -4,6 +4,7 @@ Daemon for Argos, a Python project to keep track of series on IPTorrents.
 ## Requirements
 - Account on IPTorrents
 - Python 3.2+
+- System using systemd
 
 ## Installation
 - Clone this repository in /opt/argosd/
