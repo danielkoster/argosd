@@ -1,5 +1,7 @@
-from argosd import argosd, settings
 import logging
+
+from argosd import argosd, settings
+
 
 formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
 

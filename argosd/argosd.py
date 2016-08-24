@@ -1,14 +1,20 @@
-from argosd import iptorrents
-from time import sleep
-import logging
 import sys
+import logging
+from time import sleep
+
+from argosd.iptorrents import IPTorrents
 
 
 class ArgosD:
 
+    _logger = None
+
+    def __init__(self):
+        self._logger = logging.getLogger('argosd')
+
     def run(self):
-        self.logger = logging.getLogger('argosd')
-        self.logger.info('ArgosD running')
+        """Checks for new series every 10 minutes"""
+        self._logger.info('ArgosD running')
 
         while True:
             try:
@@ -17,10 +23,11 @@ class ArgosD:
                 # Run every 10 minutes
                 sleep(10 * 60)
             except KeyboardInterrupt:
-                self.logger.info('ArgosD stopping, received KeyboardInterrupt')
+                self._logger.info(
+                    'ArgosD stopping, received KeyboardInterrupt')
                 sys.exit(0)
 
     def _check_series(self):
-        ipt = iptorrents.IPTorrents()
-        series = ipt.get_series()
-        self.logger.debug('Series found: {}'.format(len(series)))
+        iptorrents = IPTorrents()
+        series = iptorrents.get_series()
+        self._logger.debug('Series found: {}'.format(len(series)))
