@@ -3,19 +3,14 @@ import logging
 from argosd import argosd, settings
 
 
-formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
-
-logfile_handler = logging.FileHandler('/var/log/argosd/argosd.log', 'a')
-logfile_handler.setLevel(logging.DEBUG)
-logfile_handler.setFormatter(formatter)
-
-logger = logging.getLogger('argosd')
-
+logformat = '[%(asctime)s] [%(levelname)s] %(message)s'
 loglevel = logging.DEBUG if settings.DEBUG else logging.INFO
-logger.setLevel(loglevel)
-logger.addHandler(logfile_handler)
+logfile = '/var/log/argosd/argosd.log'
 
-logger.info('ArgosD starting')
+logging.basicConfig(format=logformat, level=loglevel,
+                    filename=logfile, filemode='a')
+
+logging.info('ArgosD starting')
 
 argosd = argosd.ArgosD()
 argosd.run()
