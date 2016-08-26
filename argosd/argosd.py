@@ -1,28 +1,44 @@
 import sys
 import logging
 from time import sleep
+from queue import PriorityQueue
 
-from argosd.iptorrents import IPTorrents
+from argosd.scheduler import Scheduler
 
 
 class ArgosD:
 
+    queue = None
+    scheduler = None
+
+    def __init__(self):
+        self.queue = PriorityQueue()
+        self.scheduler = Scheduler(self.queue)
+
     def run(self):
-        """Checks for new series every 10 minutes"""
+        """Starts all processes"""
         logging.info('ArgosD running')
+
+        self.scheduler.run()
 
         while True:
             try:
-                self._check_series()
+                __, task = self.queue.get()
+                task.run()
 
-                # Run every 10 minutes
-                sleep(10 * 60)
+                # Wait at least 1 second before processing a new task
+                sleep(1)
             except KeyboardInterrupt:
-                logging.info(
-                    'ArgosD stopping, received KeyboardInterrupt')
-                sys.exit(0)
+                self.stop()
 
-    def _check_series(self):
-        iptorrents = IPTorrents()
-        series = iptorrents.get_series()
-        logging.debug('Series found: {}'.format(len(series)))
+    def stop(self):
+        """Stops all running processes"""
+        logging.info('ArgosD stopping')
+
+        # Tell the scheduler to stop and wait for it to finish
+        logging.info('Telling scheduler to stop')
+        self.scheduler.stop()
+        logging.info('Scheduler stopped')
+
+        logging.info('ArgosD stopped')
+        sys.exit(0)
