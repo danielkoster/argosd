@@ -24,9 +24,6 @@ class ArgosD:
         self.taskscheduler.run()
         self.taskrunner.run()
 
-        def stop_stuff(signum, frame):
-            self.stop()
-
         # Stop everything when a SIGTERM is received
         signal.signal(signal.SIGTERM, self._handle_signal)
 
