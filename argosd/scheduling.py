@@ -45,6 +45,8 @@ class TaskRunner(Threaded):
         """Called from the thread, runs queued tasks"""
         while(not self._stop.is_set()):
             try:
+                # Don't block when retrieving tasks from the queue
+                # If we block, the thread stop event isn't processed
                 __, task = self._queue.get(block=False)
                 logging.debug('Task found: {}'.format(task.__class__.__name__))
                 task.run()

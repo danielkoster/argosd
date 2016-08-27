@@ -1,5 +1,7 @@
 # ArgosD
 Daemon for Argos, a Python project to keep track of series on IPTorrents.
+This project is intended to be run on a Raspberry Pi, but should work on any
+other system meeting the requirements.
 
 ## Requirements
 - Account on IPTorrents
@@ -21,3 +23,7 @@ You can start it manually with `systemctl start argosd`.
 ## Running unit tests
 To run unit tests first install testing dependencies with `pip install -r requirements-test.txt`.
 After this, run `nosetests` to start testing.
+
+## Disclaimer
+Downloading copyrighted content to which you do not own the rights might be illegal in your contry.
+The author of this project is *not* responsible for your use of it.
