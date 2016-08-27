@@ -15,7 +15,8 @@ class TaskScheduler:
     def __init__(self, queue):
         self._stop = threading.Event()
         self._queue = queue
-        self._thread = threading.Thread(name='taskscheduler', target=self._loop)
+        self._thread = threading.Thread(name='taskscheduler',
+                                        target=self._loop)
 
     def run(self):
         self._thread.start()
