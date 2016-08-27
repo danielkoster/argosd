@@ -1,5 +1,4 @@
 import logging
-import sys
 from time import sleep
 from queue import Empty
 
@@ -20,7 +19,8 @@ class TaskScheduler(Threaded):
         self._create_schedules()
 
     def deferred(self):
-        while True:
+        """Called from the thread, schedules pending tasks"""
+        while(not self._stop.is_set()):
             schedule.run_pending()
             sleep(1)
 
@@ -42,6 +42,7 @@ class TaskRunner(Threaded):
         super().__init__()
 
     def deferred(self):
+        """Called from the thread, runs queued tasks"""
         while(not self._stop.is_set()):
             try:
                 __, task = self._queue.get(block=False)
