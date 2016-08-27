@@ -1,68 +1,51 @@
 import logging
-import threading
+import sys
 from time import sleep
 from queue import Empty
 
+import schedule
+
 from argosd.tasks import IPTorrentsTask
+from argosd.threading import Threaded
 
 
-class TaskScheduler:
+class TaskScheduler(Threaded):
 
-    _stop = None
     _queue = None
-    _thread = None
 
     def __init__(self, queue):
-        self._stop = threading.Event()
         self._queue = queue
-        self._thread = threading.Thread(name='taskscheduler',
-                                        target=self._loop)
+        super().__init__()
 
-    def run(self):
-        self._thread.start()
+        self._create_schedules()
 
-    def stop(self):
-        """Stop the TaskScheduler and wait for it to finish"""
-        logging.info('TaskScheduler stopping')
-        self._stop.set()
-        self._thread.join()
-        logging.info('TaskScheduler stopped')
+    def deferred(self):
+        while True:
+            schedule.run_pending()
+            sleep(1)
 
-    def _loop(self):
-        while(not self._stop.is_set()):
-            logging.debug('TaskScheduler running')
-            task = IPTorrentsTask()
-            self._queue.put(item=(task.get_priority(), task))
-            sleep(5)
+    def _create_schedules(self):
+        schedule.every(5).seconds.do(self._add_to_queue, IPTorrentsTask)
+
+    def _add_to_queue(self, task_class):
+        # Create a new instance of the given class
+        task = task_class()
+        self._queue.put(item=(task.get_priority(), task))
 
 
-class TaskRunner:
+class TaskRunner(Threaded):
 
-    _stop = None
     _queue = None
-    _thread = None
 
     def __init__(self, queue):
-        self._stop = threading.Event()
         self._queue = queue
-        self._thread = threading.Thread(name='taskrunner', target=self._loop)
+        super().__init__()
 
-    def run(self):
-        self._thread.start()
-
-    def stop(self):
-        """Stop the TaskRunner and wait for it to finish"""
-        logging.info('TaskRunner stopping')
-        self._stop.set()
-        self._thread.join()
-        logging.info('TaskRunner stopped')
-
-    def _loop(self):
+    def deferred(self):
         while(not self._stop.is_set()):
-            logging.debug('TaskRunner running')
-
             try:
                 __, task = self._queue.get(block=False)
+                logging.debug('Task found: {}'.format(task.__class__.__name__))
                 task.run()
             except Empty:
                 pass
