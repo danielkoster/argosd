@@ -1,4 +1,7 @@
 # ArgosD
+[![build status](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/build.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
+[![coverage report](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/coverage.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
+
 Daemon for Argos, a Python project to keep track of series on IPTorrents.
 This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements.
