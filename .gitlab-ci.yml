@@ -3,4 +3,4 @@ before_script:
 
 basic-tests:
   script:
-    - nosetests argosd
+    - nosetests
