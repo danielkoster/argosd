@@ -6,6 +6,14 @@ from argosd.iptorrents import IPTorrents
 
 class BaseTask(metaclass=ABCMeta):
 
+    PRIORITY_HIGH = 1
+    PRIORITY_NORMAL = 2
+    PRIORITY_LOW = 3
+
+    @abstractmethod
+    def run(self):
+        pass
+
     @abstractmethod
     def get_priority(self):
         pass
@@ -23,4 +31,4 @@ class IPTorrentsTask(BaseTask):
         logging.debug('Series found: {}'.format(len(series)))
 
     def get_priority(self):
-        return 3
+        return self.PRIORITY_NORMAL
