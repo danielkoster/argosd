@@ -1,4 +1,5 @@
 basic-tests:
   image: python:3.4
   script:
-    - nosetests3
+    - pip install nose --quiet
+    - nosetests
