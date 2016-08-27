@@ -26,4 +26,4 @@ After this, run `nosetests` to start testing.
 
 ## Disclaimer
 Downloading copyrighted content to which you do not own the rights might be illegal in your contry.
-The author of this project is *not* responsible for your use of it.
+The author of this project is **not** responsible for your use of it.
