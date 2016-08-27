@@ -1,6 +1,6 @@
 import sys
 import logging
-from time import sleep
+import signal
 from queue import PriorityQueue
 
 from argosd.scheduling import TaskScheduler, TaskRunner
@@ -24,11 +24,15 @@ class ArgosD:
         self.taskscheduler.run()
         self.taskrunner.run()
 
-        while True:
-            try:
-                sleep(1)
-            except KeyboardInterrupt:
-                self.stop()
+        def stop_stuff(signum, frame):
+            self.stop()
+
+        # Stop everything when a SIGTERM is received
+        signal.signal(signal.SIGTERM, self._handle_signal)
+        signal.pause()
+
+    def _handle_signal(self, signum, frame):
+        self.stop()
 
     def stop(self):
         """Stops all running processes"""
