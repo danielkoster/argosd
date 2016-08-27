@@ -1,7 +1,4 @@
-before_script:
-  - apt-get update -qq && apt-get install -qq -y python3-pep8 python3-nose
-
 basic-tests:
   image: python:3.4
   script:
-    - nosetests
+    - nosetests3
