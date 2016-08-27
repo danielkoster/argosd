@@ -29,7 +29,6 @@ class ArgosD:
 
         # Stop everything when a SIGTERM is received
         signal.signal(signal.SIGTERM, self._handle_signal)
-        signal.pause()
 
     def _handle_signal(self, signum, frame):
         self.stop()
