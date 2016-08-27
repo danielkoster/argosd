@@ -1,5 +1,5 @@
 basic-tests:
   image: python:3.4
   script:
-    - pip install nose --quiet
+    - pip install -r requirements-test.txt --quiet
     - nosetests
