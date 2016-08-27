@@ -3,30 +3,29 @@ import logging
 from time import sleep
 from queue import PriorityQueue
 
-from argosd.scheduler import Scheduler
+from argosd.scheduling import TaskScheduler, TaskRunner
 
 
 class ArgosD:
 
     queue = None
-    scheduler = None
+    taskscheduler = None
+    taskrunner = None
 
     def __init__(self):
         self.queue = PriorityQueue()
-        self.scheduler = Scheduler(self.queue)
+        self.taskscheduler = TaskScheduler(self.queue)
+        self.taskrunner = TaskRunner(self.queue)
 
     def run(self):
         """Starts all processes"""
         logging.info('ArgosD running')
 
-        self.scheduler.run()
+        self.taskscheduler.run()
+        self.taskrunner.run()
 
         while True:
             try:
-                __, task = self.queue.get()
-                task.run()
-
-                # Wait at least 1 second before processing a new task
                 sleep(1)
             except KeyboardInterrupt:
                 self.stop()
@@ -35,10 +34,13 @@ class ArgosD:
         """Stops all running processes"""
         logging.info('ArgosD stopping')
 
-        # Tell the scheduler to stop and wait for it to finish
-        logging.info('Telling scheduler to stop')
-        self.scheduler.stop()
-        logging.info('Scheduler stopped')
+        # Tell the scheduler to stop
+        logging.info('Telling taskscheduler to stop')
+        self.taskscheduler.stop()
+
+        # Tell the taskrunner to stop
+        logging.info('Telling taskrunner to stop')
+        self.taskrunner.stop()
 
         logging.info('ArgosD stopped')
         sys.exit(0)
