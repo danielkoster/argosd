@@ -3,7 +3,7 @@ import logging
 from argosd import argosd, settings
 
 
-logformat = '[%(asctime)s] [%(levelname)s] %(message)s'
+logformat = '[%(asctime)s] [%(thread)d] [%(levelname)s] %(message)s'
 loglevel = logging.DEBUG if settings.DEBUG else logging.INFO
 logfile = '/var/log/argosd/argosd.log'
 
