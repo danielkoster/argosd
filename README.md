@@ -2,12 +2,11 @@
 [![build status](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/build.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
 [![coverage report](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/coverage.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
 
-Daemon for Argos, a Python project to keep track of series on IPTorrents.
+Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements.
 
 ## Requirements
-- Account on IPTorrents
 - Python 3.2+
 - System using systemd
 
@@ -22,6 +21,10 @@ other system meeting the requirements.
 This adds a systemd service named "argosd" to your system
 and creates /var/log/argosd/ where logfiles are stored.
 You can start it manually with `systemctl start argosd`.
+
+## Troubleshooting
+If any issues occur, check /var/log/argosd/argosd.log for information.
+For example, if you forget to enter a RSS_FEED in the settings, an error will be logged.
 
 ## Running unit tests
 To run unit tests first install testing dependencies with `pip install -r requirements-test.txt`.
