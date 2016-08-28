@@ -17,7 +17,9 @@ class Threaded(metaclass=ABCMeta):
         return self.__class__.__name__
 
     def run(self):
+        logging.info('{} starting'.format(self.get_name()))
         self._thread.start()
+        logging.info('{} started'.format(self.get_name()))
 
     def stop(self):
         """Stop the current thread and wait for it to finish"""
