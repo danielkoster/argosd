@@ -5,9 +5,10 @@ from abc import ABCMeta, abstractmethod
 import feedparser
 
 from argosd import settings
+from argosd.threading import Threaded
 
 
-class BaseTask(metaclass=ABCMeta):
+class BaseTask(Threaded):
     """Abstract task, provides basic task functionality"""
 
     PRIORITY_HIGH = 1
@@ -16,20 +17,29 @@ class BaseTask(metaclass=ABCMeta):
 
     priority = PRIORITY_NORMAL
 
-    @abstractmethod
-    def run(self):
-        """Method called when task is run"""
-        pass
-
     def __lt__(self, other):
         """Compare to another task, sort by priority"""
         return self.priority - other.priority
+
+    def deferred(self):
+        """A task is run in it's own thread, every exception is logged"""
+        try:
+            self._deferred()
+        except Exception as e:
+            logging.critical('Exception in %s: %s', self.get_name(), e)
+
+        logging.info('%s stopped', self.get_name())
+
+    @abstractmethod
+    def _deferred(self):
+        """The main method of a task"""
+        pass
 
 
 class RSSFeedParserTask(BaseTask):
     """Task to retrieve and download torrents from the RSS feed"""
 
-    def run(self):
+    def _deferred(self):
         episodes = self._parse_episodes_from_feed()
         logging.debug('Matching shows found: %d', len(episodes))
 
