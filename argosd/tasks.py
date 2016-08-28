@@ -3,9 +3,11 @@ import re
 from abc import ABCMeta, abstractmethod
 
 import feedparser
+from peewee import DoesNotExist, IntegrityError
 
 from argosd import settings
 from argosd.threading import Threaded
+from argosd.models import Show, Episode
 
 
 class BaseTask(Threaded):
@@ -41,7 +43,32 @@ class RSSFeedParserTask(BaseTask):
 
     def _deferred(self):
         episodes = self._parse_episodes_from_feed()
-        logging.debug('Matching shows found: %d', len(episodes))
+
+        # Save all episodes we haven't stored yet
+        for episode in episodes:
+            logging.debug('Found episode: %s', episode)
+            if self._get_existing_episode_from_database(episode) is None:
+                try:
+                    episode.save()
+                except IntegrityError:
+                    logging.error('Could not save episode to database')
+
+    def _get_existing_episode_from_database(self, episode):
+        """Retrieves an existing episode from the database.
+        An episode is equal if it has the same show, season, episode
+        and quality. We store multiple show+season+episode Episodes if
+        the quality is different so later on we can decide which
+        we want to download and perhaps wait for a better quality episode.
+        """
+        try:
+            return Episode.select() \
+                .where(Episode.show == episode.show) \
+                .where(Episode.season == episode.season) \
+                .where(Episode.episode == episode.episode) \
+                .where(Episode.quality == episode.quality) \
+                .get()
+        except DoesNotExist:
+            return None
 
     def _parse_episodes_from_feed(self):
         feed = feedparser.parse(settings.RSS_FEED)
@@ -49,11 +76,11 @@ class RSSFeedParserTask(BaseTask):
         if not feed.entries:
             logging.error('No episodes found in RSS feed, please check URL')
 
-        shows = self.get_all_shows()
+        shows = Show.select()
         episodes = []
         for item in feed.entries:
             for show in shows:
-                if show['title'] in item.title:
+                if show.title in item.title:
                     episode = self._get_episode_data_from_item(item, show)
                     episodes.append(episode)
 
@@ -62,22 +89,11 @@ class RSSFeedParserTask(BaseTask):
 
         return episodes
 
-    def get_all_shows(self):
-        """Returns a list of all the shows we want to follow"""
-        # TODO: replace this with persistent Show objects
-        return [
-            {
-                'id': 1,
-                'title': 'SciTech Now',
-            },
-        ]
-
     def _get_episode_data_from_item(self, item, show):
-        episode = {
-            'title': show['title'],
-            'link': item.link,
-            'show_id': show['id'],
-        }
+        episode = Episode()
+        episode.title = show.title
+        episode.link = item.link
+        episode.show = show
 
         # Search for season and episode number
         season_episode_regexes = [
@@ -88,8 +104,8 @@ class RSSFeedParserTask(BaseTask):
         for regex in season_episode_regexes:
             matches = re.search(regex, item.title)
             if matches is not None:
-                episode['season'] = int(matches.group(1))
-                episode['episode'] = int(matches.group(2))
+                episode.season = int(matches.group(1))
+                episode.episode = int(matches.group(2))
 
                 # We've found our season and episode, stop searching
                 break
@@ -97,6 +113,6 @@ class RSSFeedParserTask(BaseTask):
         # Search for quality of the video
         matches = re.search('([0-9]{1,4})[P|p|i]', item.title)
         if matches is not None:
-            episode['quality'] = int(matches.group(1))
+            episode.quality = int(matches.group(1))
 
         return episode

@@ -3,7 +3,11 @@ import logging
 import signal
 from queue import PriorityQueue
 
+from peewee import *
+
+from argosd import settings
 from argosd.scheduling import TaskScheduler, TaskRunner
+from argosd.models import Show, Episode
 
 
 class ArgosD:
@@ -22,6 +26,8 @@ class ArgosD:
         """Starts all processes"""
         logging.info('ArgosD starting')
 
+        self._create_database()
+
         self.taskscheduler.run()
         self.taskrunner.run()
 
@@ -33,6 +39,13 @@ class ArgosD:
         # Wait for a signal. This causes our main thread to remain alive,
         # which is needed to properly process any signals.
         signal.pause()
+
+    def _create_database(self):
+        database = SqliteDatabase('{}/argosd.db'.format(settings.ARGOSD_PATH))
+        database.connect()
+        database.create_table(Show, safe=True)
+        database.create_table(Episode, safe=True)
+        database.close()
 
     def _handle_signal(self, _signum, _frame):
         self.stop()
