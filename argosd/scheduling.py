@@ -46,12 +46,16 @@ class TaskRunner(Threaded):
         """Called from the thread, runs queued tasks"""
         while(not self._stop.is_set()):
             task = self._get_task_from_queue()
-            task.run()
+
+            # Only run a task if we found one
+            if task is not None:
+                task.run()
 
             # Wait at least 1 second before processing a new task
             sleep(1)
 
     def _get_task_from_queue(self):
+        """Tries to retrieve a task from the queue"""
         try:
             # Don't block when retrieving tasks from the queue
             # If we block, the thread stop event isn't processed
@@ -59,4 +63,4 @@ class TaskRunner(Threaded):
             logging.debug('Task found: {}'.format(task.__class__.__name__))
             return task
         except Empty:
-            pass
+            return None
