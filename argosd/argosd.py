@@ -28,6 +28,10 @@ class ArgosD:
 
         logging.info('ArgosD running')
 
+        # Wait for a signal. This causes our main thread to remain alive,
+        # which is needed to properly process any signals.
+        signal.pause()
+
     def _handle_signal(self, _signum, _frame):
         self.stop()
 
