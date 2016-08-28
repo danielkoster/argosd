@@ -7,7 +7,7 @@ This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements.
 
 ## Requirements
-- Python 3.2+
+- Python 3.4+
 - System using systemd
 
 ## Installation
