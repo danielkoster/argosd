@@ -1,7 +1,7 @@
 import unittest
 
 
-class TruthTest(unittest.TestCase):
+class TruthTestCase(unittest.TestCase):
 
     def test_truth(self):
         self.assertTrue(True)
