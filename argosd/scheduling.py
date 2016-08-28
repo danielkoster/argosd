@@ -9,6 +9,7 @@ from argosd.threading import Threaded
 
 
 class TaskScheduler(Threaded):
+    """Adds tasks to the queue"""
 
     _queue = None
 
@@ -20,7 +21,7 @@ class TaskScheduler(Threaded):
 
     def deferred(self):
         """Called from the thread, schedules pending tasks"""
-        while(not self._stop.is_set()):
+        while not self._stop.is_set():
             schedule.run_pending()
             sleep(1)
 
@@ -35,6 +36,7 @@ class TaskScheduler(Threaded):
 
 
 class TaskRunner(Threaded):
+    """Runs tasks found in the queue"""
 
     _queue = None
 
@@ -44,7 +46,7 @@ class TaskRunner(Threaded):
 
     def deferred(self):
         """Called from the thread, runs queued tasks"""
-        while(not self._stop.is_set()):
+        while not self._stop.is_set():
             task = self._get_task_from_queue()
 
             # Only run a task if we found one
@@ -59,8 +61,8 @@ class TaskRunner(Threaded):
         try:
             # Don't block when retrieving tasks from the queue
             # If we block, the thread stop event isn't processed
-            __, task = self._queue.get(block=False)
-            logging.debug('Task found: {}'.format(task.__class__.__name__))
+            _, task = self._queue.get(block=False)
+            logging.debug('Task found: %s', task.__class__.__name__)
             return task
         except Empty:
             return None

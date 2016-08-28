@@ -7,6 +7,7 @@ from argosd.scheduling import TaskScheduler, TaskRunner
 
 
 class ArgosD:
+    """Main ArgosD class. Starts all runners."""
 
     queue = None
     taskscheduler = None
@@ -19,15 +20,15 @@ class ArgosD:
 
     def run(self):
         """Starts all processes"""
-        logging.info('ArgosD running')
-
         self.taskscheduler.run()
         self.taskrunner.run()
 
         # Stop everything when a SIGTERM is received
         signal.signal(signal.SIGTERM, self._handle_signal)
 
-    def _handle_signal(self, signum, frame):
+        logging.info('ArgosD running')
+
+    def _handle_signal(self, _signum, _frame):
         self.stop()
 
     def stop(self):
