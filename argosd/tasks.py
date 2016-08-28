@@ -78,8 +78,8 @@ class RSSFeedParserTask(BaseTask):
         for regex in season_episode_regexes:
             matches = re.search(regex, item.title)
             if matches is not None:
-                episode['season'] = matches.group(1)
-                episode['episode'] = matches.group(2)
+                episode['season'] = int(matches.group(1))
+                episode['episode'] = int(matches.group(2))
 
                 # We've found our season and episode, stop searching
                 break
@@ -87,6 +87,6 @@ class RSSFeedParserTask(BaseTask):
         # Search for quality of the video
         matches = re.search('([0-9]{1,4})[P|p|i]', item.title)
         if matches is not None:
-            episode['quality'] = matches.group(1)
+            episode['quality'] = int(matches.group(1))
 
         return episode
