@@ -26,12 +26,12 @@ class TaskScheduler(Threaded):
             sleep(1)
 
     def _create_schedules(self):
-        schedule.every(30).seconds.do(self._add_rssfeedparserstask)
+        schedule.every(30).seconds.do(self._add_rssfeedparsertask)
 
     def _add_to_queue(self, task):
         self._queue.put(item=(task.priority, task))
 
-    def _add_rssfeedparserstask(self):
+    def _add_rssfeedparsertask(self):
         self._add_to_queue(RSSFeedParserTask())
 
 
