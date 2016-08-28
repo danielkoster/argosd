@@ -4,7 +4,7 @@ from queue import Empty
 
 import schedule
 
-from argosd.tasks import IPTorrentsTask
+from argosd.tasks import RSSFeedParserTask
 from argosd.threading import Threaded
 
 
@@ -26,13 +26,13 @@ class TaskScheduler(Threaded):
             sleep(1)
 
     def _create_schedules(self):
-        schedule.every(5).seconds.do(self._add_iptorrentstask)
+        schedule.every(30).seconds.do(self._add_rssfeedparserstask)
 
     def _add_to_queue(self, task):
-        self._queue.put(item=(task.get_priority(), task))
+        self._queue.put(item=(task.priority, task))
 
-    def _add_iptorrentstask(self):
-        self._add_to_queue(IPTorrentsTask())
+    def _add_rssfeedparserstask(self):
+        self._add_to_queue(RSSFeedParserTask())
 
 
 class TaskRunner(Threaded):

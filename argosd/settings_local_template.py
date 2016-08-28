@@ -1,8 +1,7 @@
 from argosd.settings_default import *
 
+
+"""The URL to your RSS-feed. This should be a feed containing a channel
+with items that have a title and a link.
 """
-Add the URL to your IPTorrents RSS-feed.
-Make sure to check the TV-category of your liking (TV/x264 is recommended),
-and check 'Download link'.
-"""
-IPTORRENTS_RSS_FEED = ''
+RSS_FEED = ''
