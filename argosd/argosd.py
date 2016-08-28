@@ -20,6 +20,8 @@ class ArgosD:
 
     def run(self):
         """Starts all processes"""
+        logging.info('ArgosD starting')
+
         self.taskscheduler.run()
         self.taskrunner.run()
 

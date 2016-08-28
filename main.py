@@ -10,7 +10,5 @@ logfile = '/var/log/argosd/argosd.log'
 logging.basicConfig(format=logformat, level=loglevel,
                     filename=logfile, filemode='a')
 
-logging.info('ArgosD starting')
-
 argosd = argosd.ArgosD()
 argosd.run()
