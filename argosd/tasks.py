@@ -154,8 +154,9 @@ class EpisodeDownloadTask(BaseTask):
 
     def _get_episodes(self):
         """Get all non-downloaded episodes, order with highest quality first"""
+        # TODO: Remove hack to pass PEP8 by checking is_downloaded bool == 0
         return list(Episode.select()
-                    .where(Episode.is_downloaded is False)
+                    .where(Episode.is_downloaded == 0)
                     .order_by(Episode.quality.desc()))
 
     def _download_episode(self, episode):
