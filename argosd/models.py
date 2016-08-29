@@ -15,8 +15,10 @@ class Show(BaseModel):
     title = CharField(unique=True)
     follow_from_season = IntegerField()
     follow_from_episode = IntegerField()
+    # Minimum quality an episode show be
     quality_threshold = IntegerField()
     tmdb_id = IntegerField(null=True)
+    wait_minutes_for_better_quality = IntegerField(default=0)
 
 
 class Episode(BaseModel):
@@ -29,3 +31,9 @@ class Episode(BaseModel):
     quality = IntegerField()
     is_downloaded = BooleanField(default=False)
     created_at = TimestampField()
+
+    class Meta:
+        indexes = (
+            # Unique key on show/season/episode/quality
+            (('show', 'season', 'episode', 'quality'), True),
+        )

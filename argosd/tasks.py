@@ -1,6 +1,7 @@
 import logging
 import re
 from abc import ABCMeta, abstractmethod
+from datetime import datetime, timedelta
 
 import feedparser
 from peewee import DoesNotExist, IntegrityError
@@ -116,3 +117,52 @@ class RSSFeedParserTask(BaseTask):
             episode.quality = int(matches.group(1))
 
         return episode
+
+
+class EpisodeDownloadTask(BaseTask):
+
+    def _deferred(self):
+        episodes = self._get_episodes()
+        now = datetime.now()
+
+        for episode in episodes:
+            download_after = episode.created_at + timedelta(
+                minutes=episode.show.wait_minutes_for_better_quality)
+
+            if now > download_after or \
+                episode.quality >= settings.QUALITY_THRESHOLD:
+
+                self._download_episode(episode)
+
+                # Delete all episodes from this show+season+episode
+                # so we don't download another quality variant.
+                to_delete = [item for item in episodes if
+                    item != episode and
+                    item.show == episode.show and
+                    item.season == episode.season and
+                    item.episode == episode.episode]
+
+                for episode in to_delete:
+                    episode.delete_instance()
+
+                to_delete.append(episode)
+
+                # Remove all of them from the list so we don't iterate
+                # over them again. Alter the original list we are using.
+                episodes[:] = [episode for episode in episodes if
+                    episode not in to_delete]
+
+    def _get_episodes(self):
+        """Get all non-downloaded episodes, order with highest quality first"""
+        return list(Episode.select() \
+            .where(Episode.is_downloaded == False) \
+            .order_by(Episode.quality.desc()))
+
+
+    def _download_episode(self, episode):
+        """Add the torrent from the episode to a download application"""
+
+        # TODO: Add torrent to download application
+
+        episode.is_downloaded = True
+        episode.save()
