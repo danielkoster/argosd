@@ -130,17 +130,17 @@ class EpisodeDownloadTask(BaseTask):
                 minutes=episode.show.wait_minutes_for_better_quality)
 
             if now > download_after or \
-                episode.quality >= settings.QUALITY_THRESHOLD:
+                    episode.quality >= settings.QUALITY_THRESHOLD:
 
                 self._download_episode(episode)
 
                 # Delete all episodes from this show+season+episode
                 # so we don't download another quality variant.
                 to_delete = [item for item in episodes if
-                    item != episode and
-                    item.show == episode.show and
-                    item.season == episode.season and
-                    item.episode == episode.episode]
+                             item != episode and
+                             item.show == episode.show and
+                             item.season == episode.season and
+                             item.episode == episode.episode]
 
                 for episode in to_delete:
                     episode.delete_instance()
@@ -150,14 +150,13 @@ class EpisodeDownloadTask(BaseTask):
                 # Remove all of them from the list so we don't iterate
                 # over them again. Alter the original list we are using.
                 episodes[:] = [episode for episode in episodes if
-                    episode not in to_delete]
+                               episode not in to_delete]
 
     def _get_episodes(self):
         """Get all non-downloaded episodes, order with highest quality first"""
-        return list(Episode.select() \
-            .where(Episode.is_downloaded == False) \
-            .order_by(Episode.quality.desc()))
-
+        return list(Episode.select()
+                    .where(Episode.is_downloaded is False)
+                    .order_by(Episode.quality.desc()))
 
     def _download_episode(self, episode):
         """Add the torrent from the episode to a download application"""
