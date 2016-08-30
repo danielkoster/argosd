@@ -15,7 +15,7 @@ class Show(BaseModel):
     title = CharField(unique=True)
     follow_from_season = IntegerField()
     follow_from_episode = IntegerField()
-    # Minimum quality an episode show be
+    # Minimum quality an episode should be
     quality_threshold = IntegerField()
     tmdb_id = IntegerField(null=True)
     wait_minutes_for_better_quality = IntegerField(default=0)
