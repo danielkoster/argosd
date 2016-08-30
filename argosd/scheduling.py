@@ -17,10 +17,10 @@ class TaskScheduler(Threaded):
         self._queue = queue
         super().__init__()
 
-        self._create_schedules()
-
     def deferred(self):
         """Called from the thread, schedules pending tasks"""
+        self._create_schedules()
+
         while not self._stop.is_set():
             schedule.run_pending()
             sleep(1)

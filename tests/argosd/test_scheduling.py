@@ -28,6 +28,9 @@ class SchedulingTestCase(unittest.TestCase):
         taskscheduler._add_to_queue(task_two)
         taskscheduler._add_to_queue(task_three)
 
+        # Make sure only our 3 tasks are in the queue
+        self.assertEqual(taskscheduler._queue.qsize(), 3)
+
         # Check order of tasks in queue, PRIORITY_HIGH should be first
         task = taskrunner._get_task_from_queue()
         self.assertEqual(task.priority, BaseTask.PRIORITY_HIGH)
