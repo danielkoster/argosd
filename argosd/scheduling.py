@@ -4,7 +4,7 @@ from queue import Empty
 
 import schedule
 
-from argosd.tasks import RSSFeedParserTask
+from argosd.tasks import RSSFeedParserTask, EpisodeDownloadTask
 from argosd.threading import Threaded
 
 
@@ -26,13 +26,20 @@ class TaskScheduler(Threaded):
             sleep(1)
 
     def _create_schedules(self):
-        schedule.every(30).seconds.do(self._add_rssfeedparsertask)
+        schedule.every(10).minutes.do(self._add_rssfeedparsertask)
+        schedule.every().minute.do(self._add_episodedownloadtask)
+
+        # Add the RSSFeedParserTask immediately so we don't waste 10 minutes
+        self._add_to_queue(RSSFeedParserTask())
 
     def _add_to_queue(self, task):
         self._queue.put(item=(task.priority, task))
 
     def _add_rssfeedparsertask(self):
         self._add_to_queue(RSSFeedParserTask())
+
+    def _add_episodedownloadtask(self):
+        self._add_to_queue(EpisodeDownloadTask())
 
 
 class TaskRunner(Threaded):
