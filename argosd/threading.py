@@ -20,16 +20,16 @@ class Threaded(metaclass=ABCMeta):
 
     def run(self):
         """Starts the thread"""
-        logging.info('%s starting', self.get_name())
+        logging.debug('%s starting', self.get_name())
         self._thread.start()
-        logging.info('%s started', self.get_name())
+        logging.debug('%s started', self.get_name())
 
     def stop(self):
         """Stop the current thread and wait for it to finish"""
-        logging.info('%s stopping', self.get_name())
+        logging.debug('%s stopping', self.get_name())
         self._stop.set()
         self._thread.join()
-        logging.info('%s stopped', self.get_name())
+        logging.debug('%s stopped', self.get_name())
 
     @abstractmethod
     def deferred(self):
