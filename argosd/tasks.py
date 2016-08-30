@@ -46,12 +46,14 @@ class RSSFeedParserTask(BaseTask):
     def _deferred(self):
         episodes = self._parse_episodes_from_feed()
 
+        logging.info('Relevant episodes found in RSS feed: %d', len(episodes))
+
         # Save all episodes we haven't stored yet
         for episode in episodes:
             logging.debug('Found episode: %s', episode)
             if self._get_existing_episode_from_database(episode) is None:
                 try:
-                    logging.info('Downloaded episode - %s - S%d - E%d - Q%d',
+                    logging.info('Saved episode - %s - S%d - E%d - Q%d',
                                  episode.title, episode.season,
                                  episode.episode, episode.quality)
                     episode.save()
@@ -137,6 +139,10 @@ class EpisodeDownloadTask(BaseTask):
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
                 self._download_episode(episode)
+
+                logging.info('Downloaded episode - %s - S%d - E%d - Q%d',
+                             episode.title, episode.season,
+                             episode.episode, episode.quality)
 
                 # Delete all episodes from this show+season+episode
                 # so we don't download another quality variant.
