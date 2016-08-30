@@ -9,6 +9,7 @@ from peewee import DoesNotExist, IntegrityError
 from argosd import settings
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
+from argosd.torrentclient import Transmission
 
 
 class BaseTask(Threaded):
@@ -50,6 +51,9 @@ class RSSFeedParserTask(BaseTask):
             logging.debug('Found episode: %s', episode)
             if self._get_existing_episode_from_database(episode) is None:
                 try:
+                    logging.info('Downloaded episode - %s - S%d - E%d - Q%d',
+                                 episode.title, episode.season,
+                                 episode.episode, episode.quality)
                     episode.save()
                 except IntegrityError:
                     logging.error('Could not save episode to database')
@@ -160,9 +164,9 @@ class EpisodeDownloadTask(BaseTask):
                     .order_by(Episode.quality.desc()))
 
     def _download_episode(self, episode):
-        """Add the torrent from the episode to a download application"""
-
-        # TODO: Add torrent to download application
+        """Add the torrent from the episode to a torrent client"""
+        torrentclient = Transmission()
+        torrentclient.download_torrent(episode.link)
 
         episode.is_downloaded = True
         episode.save()
