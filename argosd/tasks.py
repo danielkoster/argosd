@@ -54,7 +54,7 @@ class RSSFeedParserTask(BaseTask):
             if self._get_existing_episode_from_database(episode) is None:
                 try:
                     logging.info('Saved episode - %s - S%d - E%d - Q%d',
-                                 episode.title, episode.season,
+                                 episode.show.title, episode.season,
                                  episode.episode, episode.quality)
                     episode.save()
                 except IntegrityError:
@@ -141,7 +141,7 @@ class EpisodeDownloadTask(BaseTask):
                 self._download_episode(episode)
 
                 logging.info('Downloaded episode - %s - S%d - E%d - Q%d',
-                             episode.title, episode.season,
+                             episode.show.title, episode.season,
                              episode.episode, episode.quality)
 
                 # Delete all episodes from this show+season+episode
