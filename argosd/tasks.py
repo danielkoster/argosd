@@ -32,7 +32,7 @@ class BaseTask(Threaded):
         except Exception as e:
             logging.critical('Exception in %s: %s', self.get_name(), e)
 
-        logging.info('%s stopped', self.get_name())
+        logging.debug('%s stopped', self.get_name())
 
     @abstractmethod
     def _deferred(self):
