@@ -6,7 +6,7 @@ config = {
     'description': ('Daemon for Argos, a Python project '
                     'to keep track of TV shows from an RSS feed.'),
     'author': 'Daniel Koster',
-    'url': 'http://gitlab.intarweb.nl/pi-projects/argosd',
+    'url': 'https://github.com/danielkoster/argosd',
     'version': '0.1.0',
     'data_files': [
         ('/var/log/argosd', []),
