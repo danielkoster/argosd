@@ -1,6 +1,5 @@
 # ArgosD
-[![build status](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/build.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
-[![coverage report](http://gitlab.intarweb.nl/pi-projects/argosd/badges/master/coverage.svg)](http://gitlab.intarweb.nl/pi-projects/argosd/commits/master)
+[![Build Status](https://travis-ci.org/danielkoster/argosd.svg?branch=master)](https://travis-ci.org/danielkoster/argosd)
 
 Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any

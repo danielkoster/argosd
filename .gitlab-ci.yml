@@ -1,7 +1,0 @@
-basic-tests:
-  image: python:3.4
-  script:
-    - pip install -r requirements-test.txt --quiet
-    - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive
-    - pep8 argosd
-    - pep8 tests

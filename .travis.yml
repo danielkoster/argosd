@@ -1,9 +1,10 @@
+# https://travis-ci.org/danielkoster/argosd
 language: python
 python:
   - 3.4
   - 3.5
 install:
-  - pip install -r requirements-test.txt
+  - pip install -r requirements-test.txt --quiet
 script:
   - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive
   - pep8 argosd
