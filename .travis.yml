@@ -1,0 +1,10 @@
+language: python
+python:
+  - 3.4
+  - 3.5
+install:
+  - pip install -r requirements-test.txt
+script:
+  - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive
+  - pep8 argosd
+  - pep8 tests
