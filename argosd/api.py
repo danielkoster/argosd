@@ -1,5 +1,3 @@
-import json
-
 from flask import Flask
 from flask_restful import reqparse, abort, Resource
 from peewee import DoesNotExist, IntegrityError
@@ -24,18 +22,15 @@ class Api:
         self._api.add_resource(EpisodesResource, '/episodes')
 
     def run(self):
-        """Called from the thread, starts the API"""
+        """Starts the API, listens to external requests"""
         self._app.run(host='0.0.0.0')
 
 
 class ShowsResource(Resource):
 
     def get(self):
-        try:
-            shows = Show.select()
-            return [model_to_dict(show) for show in shows]
-        except DoesNotExist:
-            abort(404)
+        shows = Show.select()
+        return [model_to_dict(show) for show in shows]
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -115,8 +110,5 @@ class ShowResource(Resource):
 class EpisodesResource(Resource):
 
     def get(self):
-        try:
-            episodes = Episode.select()
-            return [model_to_dict(episode) for episode in episodes]
-        except DoesNotExist:
-            abort(404)
+        episodes = Episode.select()
+        return [model_to_dict(episode) for episode in episodes]
