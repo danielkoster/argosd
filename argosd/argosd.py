@@ -43,8 +43,7 @@ class ArgosD:
     def _create_database(self):
         database = SqliteDatabase('{}/argosd.db'.format(settings.ARGOSD_PATH))
         database.connect()
-        database.create_table(Show, safe=True)
-        database.create_table(Episode, safe=True)
+        database.create_tables([Show, Episode], safe=True)
         database.close()
 
     def _handle_signal(self, _signum, _frame):
