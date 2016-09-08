@@ -5,6 +5,10 @@ Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements.
 
+After starting, a RESTful API is available on port 27467. This can be used
+to update which TV shows you would like to keep track of, and to list the episodes
+that have been downloaded.
+
 ## Requirements
 - Python 3.4+
 - System using systemd
