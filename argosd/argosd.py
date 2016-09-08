@@ -8,7 +8,7 @@ from peewee import *
 from argosd import settings
 from argosd.scheduling import TaskScheduler, TaskRunner
 from argosd.models import Show, Episode
-from argosd.api import Api
+from argosd.api.app import Api
 
 
 class ArgosD:
