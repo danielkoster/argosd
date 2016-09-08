@@ -139,5 +139,5 @@ class ShowResource(Resource):
 class EpisodesResource(Resource):
 
     def get(self):
-        episodes = Episode.select()
+        episodes = Episode.select().where(Episode.is_downloaded == 1)
         return [model_to_dict(episode) for episode in episodes]
