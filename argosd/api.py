@@ -1,9 +1,13 @@
+import logging
+from multiprocessing import Process
+
+import flask_restful
 from flask import Flask
 from flask_restful import reqparse, abort, Resource
 from peewee import DoesNotExist, IntegrityError
 from playhouse.shortcuts import model_to_dict
-import flask_restful
 
+from argosd import settings
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
 
@@ -12,18 +16,43 @@ class Api:
 
     _app = None
     _api = None
+    _process = None
 
     def __init__(self):
         self._app = Flask('argosd')
+
         self._api = flask_restful.Api(self._app)
 
         self._api.add_resource(ShowsResource, '/shows')
         self._api.add_resource(ShowResource, '/shows/<int:show_id>')
         self._api.add_resource(EpisodesResource, '/episodes')
 
+        self._process = Process(name='Api', target=self.deferred)
+
     def run(self):
+        logging.debug('API starting')
+        self._process.start()
+        logging.debug('API started')
+
+    def stop(self):
+        logging.debug('API stopping')
+        self._process.terminate()
+        self._process.join()
+        logging.debug('API stopped')
+
+    def deferred(self):
         """Starts the API, listens to external requests"""
-        self._app.run(host='0.0.0.0')
+        # Remove all log handlers set in the main process
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+
+        logfile = '{}/api.log'.format(settings.LOG_PATH)
+        logformat = '%(message)s'
+
+        logging.basicConfig(format=logformat, level=logging.INFO,
+                            filename=logfile, filemode='a')
+
+        self._app.run(host='0.0.0.0', port=27467)
 
 
 class ShowsResource(Resource):
