@@ -9,3 +9,4 @@ script:
   - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive
   - pep8 argosd
   - pep8 tests
+  - python-codacy-coverage -r coverage.xml
