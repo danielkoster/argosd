@@ -1,6 +1,6 @@
 import logging
 import re
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from datetime import datetime, timedelta
 
 import feedparser
@@ -13,7 +13,7 @@ from argosd.torrentclient import Transmission
 
 
 class BaseTask(Threaded):
-    """Abstract task, provides basic task functionality"""
+    """Abstract task, provides basic task functionality."""
 
     PRIORITY_HIGH = 1
     PRIORITY_NORMAL = 2
@@ -22,11 +22,11 @@ class BaseTask(Threaded):
     priority = PRIORITY_NORMAL
 
     def __lt__(self, other):
-        """Compare to another task, sort by priority"""
+        """Compare to another task, sort by priority."""
         return self.priority - other.priority
 
     def deferred(self):
-        """A task is run in it's own thread, every exception is logged"""
+        """A task is run in it's own thread, every exception is logged."""
         try:
             self._deferred()
         except Exception as e:
@@ -36,12 +36,12 @@ class BaseTask(Threaded):
 
     @abstractmethod
     def _deferred(self):
-        """The main method of a task"""
-        pass
+        """The main method of a task."""
+        raise NotImplementedError
 
 
 class RSSFeedParserTask(BaseTask):
-    """Task to retrieve and download torrents from the RSS feed"""
+    """Task to retrieve and download torrents from the RSS feed."""
 
     def _deferred(self):
         episodes = self._parse_episodes_from_feed()
@@ -60,13 +60,13 @@ class RSSFeedParserTask(BaseTask):
                 except IntegrityError:
                     logging.error('Could not save episode to database')
 
-    def _get_existing_episode_from_database(self, episode):
+    @staticmethod
+    def _get_existing_episode_from_database(episode):
         """Retrieves an existing episode from the database.
         An episode is equal if it has the same show, season, episode
         and quality. We store multiple show+season+episode Episodes if
         the quality is different so later on we can decide which
-        we want to download and perhaps wait for a better quality episode.
-        """
+        we want to download and perhaps wait for a better quality episode."""
         try:
             return Episode.select() \
                 .where(Episode.show == episode.show) \
@@ -96,7 +96,8 @@ class RSSFeedParserTask(BaseTask):
 
         return episodes
 
-    def _get_episode_data_from_item(self, item, show):
+    @staticmethod
+    def _get_episode_data_from_item(item, show):
         episode = Episode()
         episode.title = show.title
         episode.link = item.link
@@ -126,6 +127,8 @@ class RSSFeedParserTask(BaseTask):
 
 
 class EpisodeDownloadTask(BaseTask):
+    """Task to retrieve episodes ready to be downloaded and sending them
+    to a torrentclient."""
 
     def _deferred(self):
         episodes = self._get_episodes()
@@ -162,15 +165,16 @@ class EpisodeDownloadTask(BaseTask):
                 episodes[:] = [episode for episode in episodes if
                                episode not in to_delete]
 
-    def _get_episodes(self):
-        """Get all non-downloaded episodes, order with highest quality first"""
-        # TODO: Remove hack to pass PEP8 by checking is_downloaded bool == 0
+    @staticmethod
+    def _get_episodes():
+        """Get all non-downloaded episodes, order by highest quality first."""
         return list(Episode.select()
                     .where(Episode.is_downloaded == 0)
                     .order_by(Episode.quality.desc()))
 
-    def _download_episode(self, episode):
-        """Add the torrent from the episode to a torrent client"""
+    @staticmethod
+    def _download_episode(episode):
+        """Add the torrent from the episode to a torrent client."""
         torrentclient = Transmission()
         torrentclient.download_torrent(episode.link)
 

@@ -2,8 +2,7 @@ from argosd.settings_default import *
 
 
 """The URL to your RSS-feed. This should be a feed containing a channel
-with items that have a title and a link.
-"""
+with items that have a title and a link."""
 RSS_FEED = ''
 
 """Specify how we can connect to the Transmission server.

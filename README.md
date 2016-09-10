@@ -1,5 +1,7 @@
 # ArgosD
 [![Build Status](https://travis-ci.org/danielkoster/argosd.svg?branch=master)](https://travis-ci.org/danielkoster/argosd)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b114513c09d042f68e07b6f52c4e029a)](https://www.codacy.com/app/daniel_28/argosd)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/b114513c09d042f68e07b6f52c4e029a)](https://www.codacy.com/app/daniel_28/argosd)
 
 Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any

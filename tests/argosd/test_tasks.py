@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 from peewee import SqliteDatabase
 from playhouse.test_utils import test_database
 
-from argosd import settings
-from argosd.tasks import RSSFeedParserTask, EpisodeDownloadTask
+from argosd.tasks import EpisodeDownloadTask
 from argosd.models import Show, Episode
 
 database = SqliteDatabase('argosd_test.db')

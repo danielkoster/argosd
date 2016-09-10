@@ -15,14 +15,19 @@ parser.add_argument('wait_minutes_for_better_quality', type=int)
 
 
 class ShowsResource(Resource):
+    """Handles API requests to the /shows endpoint."""
 
+    @staticmethod
     @requires_authentication
-    def get(self):
+    def get():
+        """Handles GET requests. Returns list of all shows."""
         shows = Show.select()
         return [model_to_dict(show) for show in shows]
 
+    @staticmethod
     @requires_authentication
-    def post(self):
+    def post():
+        """Handles POST requests. Creates a new show."""
         args = parser.parse_args()
 
         show = Show()
@@ -44,17 +49,22 @@ class ShowsResource(Resource):
 
 
 class ShowResource(Resource):
+    """Handles API requests to the /shows/<int:show_id> endpoint."""
 
+    @staticmethod
     @requires_authentication
-    def get(self, show_id):
+    def get(show_id):
+        """Handles GET requests. Returns a single show."""
         try:
             show = Show.get(Show.id == show_id)
             return model_to_dict(show)
         except DoesNotExist:
             abort(404)
 
+    @staticmethod
     @requires_authentication
-    def delete(self, show_id):
+    def delete(show_id):
+        """Handles DELETE requests. Deletes a show."""
         try:
             show = Show.get(Show.id == show_id)
             show.delete_instance()
@@ -62,8 +72,10 @@ class ShowResource(Resource):
         except DoesNotExist:
             abort(404)
 
+    @staticmethod
     @requires_authentication
-    def put(self, show_id):
+    def put(show_id):
+        """Handles PUT requests. Updates a show."""
         args = parser.parse_args()
 
         try:

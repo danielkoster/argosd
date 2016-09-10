@@ -12,7 +12,7 @@ from argosd.api.app import Api
 
 
 class ArgosD:
-    """Main ArgosD class. Starts all runners."""
+    """Main ArgosD class. Starts all runners and processes."""
 
     queue = None
     taskscheduler = None
@@ -26,7 +26,7 @@ class ArgosD:
         self.api = Api()
 
     def run(self):
-        """Starts all processes"""
+        """Starts all runners and processes."""
         logging.info('ArgosD starting')
 
         self._create_database()
@@ -44,17 +44,21 @@ class ArgosD:
         # which is needed to properly process any signals.
         signal.pause()
 
-    def _create_database(self):
+    @staticmethod
+    def _create_database():
         database = SqliteDatabase('{}/argosd.db'.format(settings.ARGOSD_PATH))
         database.connect()
         database.create_tables([Show, Episode], safe=True)
         database.close()
 
-    def _handle_signal(self, _signum, _frame):
-        self.stop()
+    def _handle_signal(self, signum, frame):
+        del frame  # Unused
+
+        if signum == signal.SIGTERM:
+            self.stop()
 
     def stop(self):
-        """Stops all running processes"""
+        """Stops all runners and processes."""
         logging.info('ArgosD stopping')
 
         # Tell the scheduler to stop
