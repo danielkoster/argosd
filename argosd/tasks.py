@@ -60,7 +60,8 @@ class RSSFeedParserTask(BaseTask):
                 except IntegrityError:
                     logging.error('Could not save episode to database')
 
-    def _get_existing_episode_from_database(self, episode):
+    @staticmethod
+    def _get_existing_episode_from_database(episode):
         """Retrieves an existing episode from the database.
         An episode is equal if it has the same show, season, episode
         and quality. We store multiple show+season+episode Episodes if
@@ -95,7 +96,8 @@ class RSSFeedParserTask(BaseTask):
 
         return episodes
 
-    def _get_episode_data_from_item(self, item, show):
+    @staticmethod
+    def _get_episode_data_from_item(item, show):
         episode = Episode()
         episode.title = show.title
         episode.link = item.link
@@ -163,14 +165,15 @@ class EpisodeDownloadTask(BaseTask):
                 episodes[:] = [episode for episode in episodes if
                                episode not in to_delete]
 
-    def _get_episodes(self):
+    @staticmethod
+    def _get_episodes():
         """Get all non-downloaded episodes, order by highest quality first."""
-        # TODO: Remove hack to pass PEP8 by checking is_downloaded bool == 0
         return list(Episode.select()
                     .where(Episode.is_downloaded == 0)
                     .order_by(Episode.quality.desc()))
 
-    def _download_episode(self, episode):
+    @staticmethod
+    def _download_episode(episode):
         """Add the torrent from the episode to a torrent client."""
         torrentclient = Transmission()
         torrentclient.download_torrent(episode.link)

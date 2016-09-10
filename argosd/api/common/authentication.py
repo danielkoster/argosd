@@ -5,6 +5,7 @@ from argosd import settings
 
 
 def check_authentication(username, token):
+    """Checks if username and API token are valid."""
     return username == 'argosd' and token == settings.API_TOKEN
 
 
@@ -19,6 +20,8 @@ def requires_authentication(function):
     to protect an API endpoint."""
     @wraps(function)
     def decorated(*args, **kwargs):
+        """Checks for authorization headers. Tells the user to authenticate
+        if none are found."""
         auth = request.authorization
         if not auth or not check_authentication(auth.username, auth.password):
             return authenticate()

@@ -44,7 +44,8 @@ class ArgosD:
         # which is needed to properly process any signals.
         signal.pause()
 
-    def _create_database(self):
+    @staticmethod
+    def _create_database():
         database = SqliteDatabase('{}/argosd.db'.format(settings.ARGOSD_PATH))
         database.connect()
         database.create_tables([Show, Episode], safe=True)
