@@ -15,14 +15,17 @@ parser.add_argument('wait_minutes_for_better_quality', type=int)
 
 
 class ShowsResource(Resource):
+    """Handles API requests to the /shows endpoint."""
 
     @requires_authentication
     def get(self):
+        """Handles GET requests. Returns list of all shows."""
         shows = Show.select()
         return [model_to_dict(show) for show in shows]
 
     @requires_authentication
     def post(self):
+        """Handles POST requests. Creates a new show."""
         args = parser.parse_args()
 
         show = Show()
@@ -44,9 +47,11 @@ class ShowsResource(Resource):
 
 
 class ShowResource(Resource):
+    """Handles API requests to the /shows/<int:show_id> endpoint."""
 
     @requires_authentication
     def get(self, show_id):
+        """Handles GET requests. Returns a single show."""
         try:
             show = Show.get(Show.id == show_id)
             return model_to_dict(show)
@@ -55,6 +60,7 @@ class ShowResource(Resource):
 
     @requires_authentication
     def delete(self, show_id):
+        """Handles DELETE requests. Deletes a show."""
         try:
             show = Show.get(Show.id == show_id)
             show.delete_instance()
@@ -64,6 +70,7 @@ class ShowResource(Resource):
 
     @requires_authentication
     def put(self, show_id):
+        """Handles PUT requests. Updates a show."""
         args = parser.parse_args()
 
         try:

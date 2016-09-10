@@ -9,7 +9,7 @@ from argosd.threading import Threaded
 
 
 class TaskScheduler(Threaded):
-    """Adds tasks to the queue"""
+    """Periodically adds tasks to the queue."""
 
     _queue = None
 
@@ -18,7 +18,7 @@ class TaskScheduler(Threaded):
         super().__init__()
 
     def deferred(self):
-        """Called from the thread, schedules pending tasks"""
+        """Called from the thread, schedules pending tasks."""
         self._create_schedules()
 
         while not self._stop.is_set():
@@ -43,7 +43,7 @@ class TaskScheduler(Threaded):
 
 
 class TaskRunner(Threaded):
-    """Runs tasks found in the queue"""
+    """Runs tasks found in the queue."""
 
     _queue = None
 
@@ -52,7 +52,7 @@ class TaskRunner(Threaded):
         super().__init__()
 
     def deferred(self):
-        """Called from the thread, runs queued tasks"""
+        """Called from the thread, runs queued tasks."""
         while not self._stop.is_set():
             task = self._get_task_from_queue()
 
@@ -64,7 +64,7 @@ class TaskRunner(Threaded):
             sleep(1)
 
     def _get_task_from_queue(self):
-        """Tries to retrieve a task from the queue"""
+        """Tries to retrieve a task from the queue."""
         try:
             # Don't block when retrieving tasks from the queue
             # If we block, the thread stop event isn't processed

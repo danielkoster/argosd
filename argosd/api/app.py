@@ -10,6 +10,7 @@ from argosd.api.resources.episodes import EpisodesResource
 
 
 class Api:
+    """Creates a RESTful API."""
 
     _app = None
     _api = None
@@ -27,18 +28,20 @@ class Api:
         self._process = Process(name='Api', target=self.deferred)
 
     def run(self):
+        """Starts the API in it's own process."""
         logging.debug('API starting')
         self._process.start()
         logging.debug('API started')
 
     def stop(self):
+        """Stops the API and waits for it to finish."""
         logging.debug('API stopping')
         self._process.terminate()
         self._process.join()
         logging.debug('API stopped')
 
     def deferred(self):
-        """Starts the API, listens to external requests"""
+        """Runs the API, listens to external requests."""
         # Remove all log handlers set in the main process
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)

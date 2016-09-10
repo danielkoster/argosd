@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Threaded(metaclass=ABCMeta):
-    """Abstract class used to make a class run in an own thread"""
+    """Abstract class used to make a class run in an own thread."""
 
     _stop = None
     _thread = None
@@ -15,17 +15,17 @@ class Threaded(metaclass=ABCMeta):
                                         target=self.deferred)
 
     def get_name(self):
-        """Returns the name of the current class"""
+        """Returns the name of the current class."""
         return self.__class__.__name__
 
     def run(self):
-        """Starts the thread"""
+        """Starts the thread."""
         logging.debug('%s starting', self.get_name())
         self._thread.start()
         logging.debug('%s started', self.get_name())
 
     def stop(self):
-        """Stop the current thread and wait for it to finish"""
+        """Stop the current thread and wait for it to finish."""
         logging.debug('%s stopping', self.get_name())
         self._stop.set()
         self._thread.join()
@@ -33,5 +33,5 @@ class Threaded(metaclass=ABCMeta):
 
     @abstractmethod
     def deferred(self):
-        """The method being called when the thread starts"""
-        pass
+        """The method being called when the thread starts."""
+        raise NotImplementedError

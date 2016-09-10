@@ -4,12 +4,14 @@ from argosd import settings
 
 
 class BaseModel(Model):
+    """Abstract model. Sets the database."""
 
     class Meta:
         database = SqliteDatabase('{}/argosd.db'.format(settings.ARGOSD_PATH))
 
 
 class Show(BaseModel):
+    """TV show we need to download from RSS feeds."""
 
     id = PrimaryKeyField()
     title = CharField(unique=True)
@@ -22,6 +24,7 @@ class Show(BaseModel):
 
 
 class Episode(BaseModel):
+    """Episodes related to TV shows."""
 
     id = PrimaryKeyField()
     show = ForeignKeyField(Show, related_name='episodes')
