@@ -12,3 +12,7 @@ TRANSMISSION_HOST = 'localhost'
 TRANSMISSION_PORT = 9091
 TRANSMISSION_USERNAME = ''
 TRANSMISSION_PASSWORD = ''
+
+"""Create an API token. You will have to send this token
+with each API request you make. Keep it safe!"""
+API_TOKEN = ''
