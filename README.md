@@ -7,7 +7,8 @@ other system meeting the requirements.
 
 After starting, a RESTful API is available on port 27467. This can be used
 to update which TV shows you would like to keep track of, and to list the episodes
-that have been downloaded.
+that have been downloaded. This API requires Basic Auth, the username is `argosd`
+and you can choose your own password in the settings_local file.
 
 ## Requirements
 - Python 3.4+
