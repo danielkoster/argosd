@@ -51,8 +51,11 @@ class ArgosD:
         database.create_tables([Show, Episode], safe=True)
         database.close()
 
-    def _handle_signal(self, _signum, _frame):
-        self.stop()
+    def _handle_signal(self, signum, frame):
+        del frame # Unused
+
+        if signum == signal.SIGTERM:
+            self.stop()
 
     def stop(self):
         """Stops all runners and processes."""
