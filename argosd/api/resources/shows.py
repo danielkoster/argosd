@@ -3,6 +3,7 @@ from playhouse.shortcuts import model_to_dict
 from peewee import DoesNotExist, IntegrityError
 
 from argosd.models import Show
+from argosd.api.common.authentication import requires_authentication
 
 
 parser = reqparse.RequestParser()
@@ -15,10 +16,12 @@ parser.add_argument('wait_minutes_for_better_quality', type=int)
 
 class ShowsResource(Resource):
 
+    @requires_authentication
     def get(self):
         shows = Show.select()
         return [model_to_dict(show) for show in shows]
 
+    @requires_authentication
     def post(self):
         args = parser.parse_args()
 
@@ -42,6 +45,7 @@ class ShowsResource(Resource):
 
 class ShowResource(Resource):
 
+    @requires_authentication
     def get(self, show_id):
         try:
             show = Show.get(Show.id == show_id)
@@ -49,6 +53,7 @@ class ShowResource(Resource):
         except DoesNotExist:
             abort(404)
 
+    @requires_authentication
     def delete(self, show_id):
         try:
             show = Show.get(Show.id == show_id)
@@ -57,6 +62,7 @@ class ShowResource(Resource):
         except DoesNotExist:
             abort(404)
 
+    @requires_authentication
     def put(self, show_id):
         args = parser.parse_args()
 
