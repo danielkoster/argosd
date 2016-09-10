@@ -52,7 +52,7 @@ class ArgosD:
         database.close()
 
     def _handle_signal(self, signum, frame):
-        del frame # Unused
+        del frame  # Unused
 
         if signum == signal.SIGTERM:
             self.stop()
