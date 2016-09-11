@@ -1,3 +1,5 @@
+"""This module contains custom commands run by setup.py."""
+
 import os
 import stat
 from pwd import getpwnam
