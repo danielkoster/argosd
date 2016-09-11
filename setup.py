@@ -1,5 +1,8 @@
-from distutils.core import setup
-import os
+from setuptools import setup
+
+from argosd import settings
+from argosd.commands import ArgosInstallCommand
+
 
 config = {
     'name': 'argosd',
@@ -9,12 +12,12 @@ config = {
     'url': 'https://github.com/danielkoster/argosd',
     'version': '0.1.0',
     'data_files': [
-        ('/var/log/argosd', []),
+        (settings.LOG_PATH, []),
         ('/etc/systemd/system/', ['install/argosd.service']),
     ],
+    'cmdclass': {
+        'install': ArgosInstallCommand,
+    },
 }
 
 setup(**config)
-
-# Make log directory world writable (777)
-os.chmod('/var/log/argosd', 0o777)
