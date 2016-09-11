@@ -89,10 +89,12 @@ class RSSFeedParserTask(BaseTask):
             for show in shows:
                 if self._match_titles(show.title, item.title):
                     episode = self._get_episode_data_from_item(item, show)
-                    episodes.append(episode)
 
-                    # Matching show has been found, move on to the next item
-                    break
+                    if episode.quality >= show.minimum_quality:
+                        episodes.append(episode)
+
+                        # Matching show has been found, move on to the next item
+                        break
 
         return episodes
 

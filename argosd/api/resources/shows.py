@@ -10,7 +10,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('title', required=True)
 parser.add_argument('follow_from_season', type=int, required=True)
 parser.add_argument('follow_from_episode', type=int, required=True)
-parser.add_argument('quality_threshold', type=int, required=True)
+parser.add_argument('minimum_quality', type=int, required=True)
 parser.add_argument('wait_minutes_for_better_quality', type=int)
 
 
@@ -34,7 +34,7 @@ class ShowsResource(Resource):
         show.title = args['title']
         show.follow_from_season = args['follow_from_season']
         show.follow_from_episode = args['follow_from_episode']
-        show.quality_threshold = args['quality_threshold']
+        show.minimum_quality = args['minimum_quality']
 
         if args['wait_minutes_for_better_quality']:
             show.wait_minutes_for_better_quality = \
@@ -86,7 +86,7 @@ class ShowResource(Resource):
         show.title = args['title']
         show.follow_from_season = args['follow_from_season']
         show.follow_from_episode = args['follow_from_episode']
-        show.quality_threshold = args['quality_threshold']
+        show.minimum_quality = args['minimum_quality']
 
         if args['wait_minutes_for_better_quality']:
             show.wait_minutes_for_better_quality = \
