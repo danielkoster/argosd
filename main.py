@@ -11,7 +11,7 @@ logging.basicConfig(format=logformat, level=loglevel,
                     filename=logfile, filemode='a')
 
 # Don't let schedule's logger write to our logfile,
-# schedule writes en info-event for each action.
+# schedule logs an info-event for each action.
 logger = logging.getLogger('schedule')
 logger.propagate = False
 

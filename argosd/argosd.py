@@ -14,15 +14,14 @@ from argosd.api.app import Api
 class ArgosD:
     """Main ArgosD class. Starts all runners and processes."""
 
-    queue = None
     taskscheduler = None
     taskrunner = None
     api = None
 
     def __init__(self):
-        self.queue = PriorityQueue()
-        self.taskscheduler = TaskScheduler(self.queue)
-        self.taskrunner = TaskRunner(self.queue)
+        queue = PriorityQueue()
+        self.taskscheduler = TaskScheduler(queue)
+        self.taskrunner = TaskRunner(queue)
         self.api = Api()
 
     def run(self):

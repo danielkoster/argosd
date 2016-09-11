@@ -30,7 +30,7 @@ class TaskScheduler(Threaded):
         schedule.every().minute.do(self._add_episodedownloadtask)
 
         # Add the RSSFeedParserTask immediately so we don't waste 10 minutes
-        self._add_to_queue(RSSFeedParserTask())
+        self._add_rssfeedparsertask()
 
     def _add_to_queue(self, task):
         self._queue.put(item=(task.priority, task))
@@ -66,8 +66,8 @@ class TaskRunner(Threaded):
     def _get_task_from_queue(self):
         """Tries to retrieve a task from the queue."""
         try:
-            # Don't block when retrieving tasks from the queue
-            # If we block, the thread stop event isn't processed
+            # Don't block when retrieving tasks from the queue.
+            # If we block, the thread stop event isn't processed.
             _, task = self._queue.get(block=False)
             logging.debug('Task found: %s', task.__class__.__name__)
             return task

@@ -5,4 +5,5 @@ tags
 .gitconfig
 .coverage
 cover
-argosd.db
+coverage.xml
+*.db
