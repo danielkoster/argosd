@@ -19,7 +19,7 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
         show.title = 'testshow'
         show.follow_from_season = 1
         show.follow_from_episode = 1
-        show.quality_threshold = 720
+        show.minimum_quality = 720
         return show
 
     @patch('argosd.settings.RSS_FEED', rss.SINGLE_MATCHING_ITEM)
@@ -92,7 +92,7 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         show.title = 'testshow'
         show.follow_from_season = 1
         show.follow_from_episode = 1
-        show.quality_threshold = 720
+        show.minimum_quality = 720
         return show
 
     def _get_new_dummy_episode(self, show):
