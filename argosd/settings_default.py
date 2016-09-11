@@ -10,3 +10,6 @@ LOG_PATH = '/var/log/argosd'
 it will be downloaded regardless of how long it might wait
 for a better quality episode."""
 QUALITY_THRESHOLD = 1080
+
+# These settings are supposed to be overwritten in a settings_local file.
+RSS_FEED = None
