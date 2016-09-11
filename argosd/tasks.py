@@ -87,7 +87,7 @@ class RSSFeedParserTask(BaseTask):
         episodes = []
         for item in feed.entries:
             for show in shows:
-                if show.title in item.title:
+                if self._match_titles(show.title, item.title):
                     episode = self._get_episode_data_from_item(item, show)
                     episodes.append(episode)
 
@@ -95,6 +95,13 @@ class RSSFeedParserTask(BaseTask):
                     break
 
         return episodes
+
+    @staticmethod
+    def _match_titles(title_show, title_feed_item):
+        # Strip all except letters, numbers and spaces and convert to lowercase
+        title_show = re.sub('[^a-zA-Z0-9 ]', '', title_show).lower()
+        title_feed_item = re.sub('[^a-zA-Z0-9 ]', '', title_feed_item).lower()
+        return title_show in title_feed_item
 
     @staticmethod
     def _get_episode_data_from_item(item, show):
