@@ -91,7 +91,8 @@ class RSSFeedParserTask(BaseTask):
                     episode = self._get_episode_data_from_item(item, show)
 
                     if episode.quality is not None and \
-                        episode.quality >= show.minimum_quality:
+                            episode.quality >= show.minimum_quality:
+
                         episodes.append(episode)
 
                         # A match has been found, move on to the next item
