@@ -6,7 +6,7 @@ python:
 install:
   - pip install -r requirements-test.txt --quiet
 script:
-  - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive
+  - nosetests tests -v --with-coverage --cover-package=argosd --cover-inclusive --cover-xml
   - pep8 argosd
   - pep8 tests
 after_success:
