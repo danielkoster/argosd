@@ -44,6 +44,7 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
             episodes = rssfeedparsertask._parse_episodes_from_feed()
 
             self.assertEqual(len(episodes), 3)
+
             self.assertEqual(episodes[0].title, 'testshow')
             self.assertEqual(episodes[0].season, 2)
             self.assertEqual(episodes[0].episode, 3)
@@ -57,7 +58,7 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
             self.assertEqual(episodes[2].title, 'testshow')
             self.assertEqual(episodes[2].season, 2)
             self.assertEqual(episodes[2].episode, 3)
-            self.assertEqual(episodes[2].quality, 480)
+            self.assertEqual(episodes[2].quality, 720)
 
     @patch('argosd.settings.RSS_FEED', rss.SINGLE_ITEM_CAPITALISATION)
     def test_parse_capitalised_episodes_from_feed(self):
@@ -83,6 +84,17 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
 
             self.assertEqual(len(episodes), 1)
             self.assertEqual(episodes[0].title, 'Mr. Robot')
+
+    @patch('argosd.settings.RSS_FEED', rss.SINGLE_ITEM_LOW_QUALITY)
+    def test_parse_low_quality_episodes_from_feed(self):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.save()
+
+            rssfeedparsertask = RSSFeedParserTask()
+            episodes = rssfeedparsertask._parse_episodes_from_feed()
+
+            self.assertEqual(len(episodes), 0)
 
 
 class EpisodeDownloadTaskTestCase(unittest.TestCase):
