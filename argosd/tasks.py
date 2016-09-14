@@ -85,20 +85,28 @@ class RSSFeedParserTask(BaseTask):
 
         shows = Show.select()
         episodes = []
-        for item in feed.entries:
-            for show in shows:
-                if self._match_titles(show.title, item.title):
-                    episode = self._get_episode_data_from_item(item, show)
+        for feed_item in feed.entries:
+            show = self._get_matching_show(feed_item)
+            if show:
+                episode = self._get_episode_data_from_item(feed_item, show)
 
-                    if episode.quality is not None and \
-                            episode.quality >= show.minimum_quality:
+                quality_check = episode.quality is not None and \
+                    episode.quality >= show.minimum_quality
 
-                        episodes.append(episode)
+                follow_check = episode.season > show.follow_from_season or \
+                    (episode.season == show.follow_from_season and
+                        episode.episode >= show.follow_from_episode)
 
-                        # A match has been found, move on to the next item
-                        break
+                if quality_check and follow_check:
+                    episodes.append(episode)
 
         return episodes
+
+    def _get_matching_show(self, feed_item):
+        shows = Show.select()
+        for show in shows:
+            if self._match_titles(show.title, feed_item.title):
+                return show
 
     @staticmethod
     def _match_titles(title_show, title_feed_item):
