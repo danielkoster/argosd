@@ -9,3 +9,6 @@ Restart=always
 RestartSec=30
 User=argosd
 Group=argosd
+
+[Install]
+WantedBy=multi-user.target
