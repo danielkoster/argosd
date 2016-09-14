@@ -23,6 +23,42 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
         return show
 
     @patch('argosd.settings.RSS_FEED', rss.SINGLE_MATCHING_ITEM)
+    def test_follow_from_is_followed(self):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.follow_from_season = 2
+            show.follow_from_episode = 2
+            show.save()
+
+            rssfeedparsertask = RSSFeedParserTask()
+            episodes = rssfeedparsertask._parse_episodes_from_feed()
+
+            self.assertEqual(len(episodes), 1)
+            self.assertEqual(episodes[0].title, 'testshow')
+
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.follow_from_season = 3
+            show.follow_from_episode = 2
+            show.save()
+
+            rssfeedparsertask = RSSFeedParserTask()
+            episodes = rssfeedparsertask._parse_episodes_from_feed()
+
+            self.assertEqual(len(episodes), 0)
+
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.follow_from_season = 2
+            show.follow_from_episode = 5
+            show.save()
+
+            rssfeedparsertask = RSSFeedParserTask()
+            episodes = rssfeedparsertask._parse_episodes_from_feed()
+
+            self.assertEqual(len(episodes), 0)
+
+    @patch('argosd.settings.RSS_FEED', rss.SINGLE_MATCHING_ITEM)
     def test_parse_single_episodes_from_feed(self):
         with test_database(database, (Show, Episode)):
             show = self._get_new_dummy_show()
