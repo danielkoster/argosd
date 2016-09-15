@@ -6,12 +6,13 @@ from argosd.models import Show
 from argosd.api.common.authentication import requires_authentication
 
 
-parser = reqparse.RequestParser()
-parser.add_argument('title', required=True)
-parser.add_argument('follow_from_season', type=int, required=True)
-parser.add_argument('follow_from_episode', type=int, required=True)
-parser.add_argument('minimum_quality', type=int, required=True)
-parser.add_argument('wait_minutes_for_better_quality', type=int)
+def get_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('title', required=True)
+    parser.add_argument('follow_from_season', type=int, required=True)
+    parser.add_argument('follow_from_episode', type=int, required=True)
+    parser.add_argument('minimum_quality', type=int, required=True)
+    parser.add_argument('wait_minutes_for_better_quality', type=int)
 
 
 class ShowsResource(Resource):
@@ -28,6 +29,7 @@ class ShowsResource(Resource):
     @requires_authentication
     def post():
         """Handles POST requests. Creates a new show."""
+        parser = get_parser()
         args = parser.parse_args()
 
         show = Show()
@@ -76,6 +78,7 @@ class ShowResource(Resource):
     @requires_authentication
     def put(show_id):
         """Handles PUT requests. Updates a show."""
+        parser = get_parser()
         args = parser.parse_args()
 
         try:
