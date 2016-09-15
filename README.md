@@ -17,14 +17,8 @@ and you can choose your own password in the settings file you'll create during i
 - System using systemd
 
 ## Installation
-- Create an "argosd" user and group on your system, run all following steps as this user
-- Clone this repository in /opt/argosd/
-- Create and activate a virtualenv in /opt/argosd/.virtualenv/
-- Copy argosd/settings_local_template.py to argosd/settings_local.py and fill it with required data
-- Run `pip install -r requirements.txt`
-- Run `python setup.py install` (as root)
-- Run `systemctl enable argosd` (as root)
-
+See the [installation instructions](docs/installation.md)
+for a step-by-step guide to install this application.
 This adds a systemd service named "argosd" to your system
 and creates /var/log/argosd/ where logfiles are stored.
 You can start it manually with `systemctl start argosd`.
@@ -36,7 +30,7 @@ an error will be logged.
 
 ## Running unit tests
 To run unit tests first install testing dependencies with `pip install -r requirements-test.txt`.
-After this, run `nosetests` to start testing.
+After this, run `nosetests tests` to start testing.
 
 ## Disclaimer
 Downloading copyrighted content to which you do not own the rights might be illegal in your country.
