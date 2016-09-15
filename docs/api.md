@@ -19,7 +19,7 @@ This document describes the API endpoints and how you can interact with them.
     "minimum_quality": 720,
     "wait_minutes_for_better_quality": 1440
   },
-  [...]
+  {...}
 ]
 ```
 Calling this endpoint returns a list of shows that are being tracked.
@@ -73,7 +73,7 @@ Updates a specific show. Accepts the same parameters as a POST to /shows.
     "is_downloaded": true,
     "created_at": 1473967268
   },
-  [...]
+  {...}
 ]
 ```
 Returns a list of all episodes that have been downloaded and added to a torrentclient.
