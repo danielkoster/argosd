@@ -83,7 +83,6 @@ class RSSFeedParserTask(BaseTask):
         if not feed.entries:
             logging.error('No episodes found in RSS feed, please check URL')
 
-        shows = Show.select()
         episodes = []
         for feed_item in feed.entries:
             show = self._get_matching_show(feed_item)
