@@ -58,3 +58,22 @@ Return code on success: HTTP 204 No Content.
 
 ### PUT
 Updates a specific show. Accepts the same parameters as a POST to /shows.
+
+## /episodes
+### GET
+```
+[
+  {
+    id: 1,
+    show: 1,
+    link: "http://example.com/torrents/link.torrent",
+    season: 1,
+    episode: 1,
+    quality: 720,
+    is_downloaded: true,
+    created_at: 1473967268
+  },
+  [...]
+]
+```
+Returns a list of all episodes that have been downloaded and added to a torrentclient.
