@@ -9,13 +9,13 @@ This document describes the API endpoints and how you can interact with them.
 
 ## /shows
 ### GET
-```
+```json
 [
   {
     "id": 1,
     "title": "Show title",
     "follow_from_season": 1,
-    "follow_from_episode": 1
+    "follow_from_episode": 1,
     "minimum_quality": 720,
     "wait_minutes_for_better_quality": 1440
   },
@@ -40,12 +40,12 @@ Return code on success: HTTP 201 Created.
 
 ## /shows/[id]
 ### GET
-```
+```json
 {
   "id": 1,
   "title": "Show title",
   "follow_from_season": 1,
-  "follow_from_episode": 1
+  "follow_from_episode": 1,
   "minimum_quality": 720,
   "wait_minutes_for_better_quality": 1440
 }
@@ -61,17 +61,17 @@ Updates a specific show. Accepts the same parameters as a POST to /shows.
 
 ## /episodes
 ### GET
-```
+```json
 [
   {
-    id: 1,
-    show: 1,
-    link: "http://example.com/torrents/link.torrent",
-    season: 1,
-    episode: 1,
-    quality: 720,
-    is_downloaded: true,
-    created_at: 1473967268
+    "id": 1,
+    "show": 1,
+    "link": "http://example.com/torrents/link.torrent",
+    "season": 1,
+    "episode": 1,
+    "quality": 720,
+    "is_downloaded": true,
+    "created_at": 1473967268
   },
   [...]
 ]
