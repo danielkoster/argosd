@@ -13,6 +13,7 @@ def get_parser():
     parser.add_argument('follow_from_episode', type=int, required=True)
     parser.add_argument('minimum_quality', type=int, required=True)
     parser.add_argument('wait_minutes_for_better_quality', type=int)
+    return parser
 
 
 class ShowsResource(Resource):
