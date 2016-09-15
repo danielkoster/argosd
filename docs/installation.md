@@ -1,5 +1,5 @@
 # Installation
-This document describes how argosd should be installed, and walks you through the process.
+This document describes how ArgosD should be installed, and walks you through the process.
 Every command is prefixed with the name of the user it should be run as.
 
 ## Create a user
@@ -9,8 +9,8 @@ Create an "argosd" user and group on your system.
 ## Create repository destination and grant ownership
 `root$ mkdir /opt/argosd/`  
 `root$ chown argosd:argosd /opt/argosd/`  
-Most of the following commands should be run as this user.
-`root$ sudo -su argosd`
+Most of the following commands should be run as this user, so you might want to switch to this user.  
+`root$ sudo -Hsu argosd`
 
 ## Clone the repository
 `argosd$ git clone https://github.com/danielkoster/argosd.git /opt/argosd/`  
@@ -19,7 +19,7 @@ Clone this repository in /opt/argosd/.
 ## Create and activate a virtual environment
 `argosd$ virtualenv /opt/argosd/.virtualenv -p python3`  
 `argosd$ source /opt/argosd/.virtualenv/bin/activate`  
-Create and activate a virtual environment. In here we can install all the required dependencies.
+Create and activate a python3 virtual environment. In here we can install all the required dependencies.
 
 ## Copy and fill settings file
 `argosd$ cp /opt/argosd/argosd/settings_local_template.py /opt/argosd/argosd/settings_local.py`  
