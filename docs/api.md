@@ -53,11 +53,14 @@ Return code on success: HTTP 201 Created.
 Returns the stored information about a specific show.
 
 ### DELETE
-Deletes a specific show.  
+Deletes a specific show.
+
 Return code on success: HTTP 204 No Content.
 
 ### PUT
 Updates a specific show. Accepts the same parameters as a POST to /shows.
+
+Return code on success: HTTP 201 Created.
 
 ## /episodes
 ### GET
