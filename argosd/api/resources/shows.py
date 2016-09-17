@@ -1,5 +1,4 @@
 from flask_restful import reqparse, abort, Resource
-from playhouse.shortcuts import model_to_dict
 from peewee import DoesNotExist, IntegrityError
 
 from argosd.models import Show
@@ -24,7 +23,7 @@ class ShowsResource(Resource):
     def get():
         """Handles GET requests. Returns list of all shows."""
         shows = Show.select()
-        return [model_to_dict(show) for show in shows]
+        return [show.to_dict() for show in shows]
 
     @staticmethod
     @requires_authentication
@@ -48,7 +47,7 @@ class ShowsResource(Resource):
         except IntegrityError as e:
             abort(400, message=str(e))
 
-        return model_to_dict(show), 201
+        return show.to_dict(), 201
 
 
 class ShowResource(Resource):
@@ -60,7 +59,7 @@ class ShowResource(Resource):
         """Handles GET requests. Returns a single show."""
         try:
             show = Show.get(Show.id == show_id)
-            return model_to_dict(show)
+            return show.to_dict()
         except DoesNotExist:
             abort(404)
 
@@ -101,4 +100,4 @@ class ShowResource(Resource):
         except IntegrityError as e:
             abort(400, message=str(e))
 
-        return model_to_dict(show), 201
+        return show.to_dict(), 201
