@@ -68,7 +68,14 @@ Return code on success: HTTP 201 Created.
 [
   {
     "id": 1,
-    "show": 1,
+    "show": {
+      "id": 1,
+      "title": "Show title",
+      "follow_from_season": 1,
+      "follow_from_episode": 1,
+      "minimum_quality": 720,
+      "wait_minutes_for_better_quality": 1440
+    },
     "link": "http://example.com/torrents/link.torrent",
     "season": 1,
     "episode": 1,
@@ -80,3 +87,4 @@ Return code on success: HTTP 201 Created.
 ]
 ```
 Returns a list of all episodes that have been downloaded and added to a torrentclient.
+The show attribute contains all the details of the related show.
