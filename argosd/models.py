@@ -34,6 +34,10 @@ class Episode(BaseModel):
     is_downloaded = BooleanField(default=False)
     created_at = TimestampField()
 
+    def __unicode__(self):
+        return '{} - S{} - E{} - Q{}'.format(
+            self.show.title, self.season, self.episode, self.quality)
+
     class Meta:
         indexes = (
             # Unique key on show/season/episode/quality

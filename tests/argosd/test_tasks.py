@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 from datetime import datetime, timedelta
 
 from peewee import SqliteDatabase
@@ -7,7 +7,9 @@ from playhouse.test_utils import test_database
 
 from argosd.tasks import RSSFeedParserTask, EpisodeDownloadTask
 from argosd.models import Show, Episode
+from argosd.torrentclient import Transmission
 from tests.dataproviders import rss
+from tests.dataproviders.torrentclient import TransmissionAlreadyDownloaded
 
 database = SqliteDatabase('argosd_test.db')
 
@@ -237,3 +239,21 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
         episodedownloadtask._deferred()
         episodedownloadtask._download_episode.call_count = 1
+
+    @patch('argosd.tasks.Transmission',
+           new_callable=TransmissionAlreadyDownloaded)
+    def test_download_already_downloaded_episode(self, transmission):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.save()
+
+            episode = self._get_new_dummy_episode(show)
+            episode.save()
+
+            self.assertFalse(episode.is_downloaded)
+
+            episodedownloadtask = EpisodeDownloadTask()
+            episodedownloadtask._download_episode(episode)
+
+            episode = Episode.get()
+            self.assertTrue(episode.is_downloaded)
