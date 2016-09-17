@@ -48,7 +48,8 @@ class Episode(BaseModel):
 
         created_at is converted seperately because a datetime object
         is not JSON serializable."""
-        representation = model_to_dict(self, exclude=['created_at', 'link'])
+        representation = model_to_dict(self, exclude=[
+            Episode.created_at, Episode.link])
         representation['created_at'] = int(self.created_at.strftime('%s'))
         return representation
 
