@@ -7,10 +7,8 @@ Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements.
 
-After starting, a RESTful API is available on port 27467. This can be used
-to update which TV shows you would like to keep track of, and to list the episodes
-that have been downloaded. This API requires Basic Auth, the username is "argosd"
-and you can choose your own password in the settings file you'll create during installation.
+After starting, a RESTful API is available on port 27467. You can find how to use
+this API in the [API documentation](docs/api.md).
 
 ## Requirements
 - Python 3.4+
