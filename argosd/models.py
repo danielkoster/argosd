@@ -23,7 +23,6 @@ class Show(BaseModel):
     follow_from_season = IntegerField()
     follow_from_episode = IntegerField()
     minimum_quality = IntegerField()
-    tmdb_id = IntegerField(null=True)
     wait_minutes_for_better_quality = IntegerField(default=0)
 
 
