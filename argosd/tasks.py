@@ -107,7 +107,7 @@ class RSSFeedParserTask(BaseTask):
     def _is_episode_downloaded(episode):
         """Checks if this item has already been downloaded."""
         try:
-            downloaded_episode = Episode.select() \
+            Episode.select() \
                 .where(Episode.show == episode.show) \
                 .where(Episode.season == episode.season) \
                 .where(Episode.episode == episode.episode) \
