@@ -96,10 +96,26 @@ class RSSFeedParserTask(BaseTask):
                     (episode.season == show.follow_from_season and
                         episode.episode >= show.follow_from_episode)
 
-                if quality_check and follow_check:
+                is_downloaded = self._is_episode_downloaded(episode)
+
+                if quality_check and follow_check and not is_downloaded:
                     episodes.append(episode)
 
         return episodes
+
+    @staticmethod
+    def _is_episode_downloaded(episode):
+        """Checks if this item has already been downloaded."""
+        try:
+            downloaded_episode = Episode.select() \
+                .where(Episode.show == episode.show) \
+                .where(Episode.season == episode.season) \
+                .where(Episode.episode == episode.episode) \
+                .where(Episode.is_downloaded == 1) \
+                .get()
+            return True
+        except DoesNotExist:
+            return False
 
     def _get_matching_show(self, feed_item):
         shows = Show.select()

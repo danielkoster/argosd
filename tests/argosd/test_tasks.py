@@ -22,6 +22,15 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
         show.minimum_quality = 720
         return show
 
+    def _get_new_dummy_episode(self, show):
+        episode = Episode()
+        episode.show = show
+        episode.link = 'testlink'
+        episode.season = 1
+        episode.episode = 1
+        episode.quality = 720
+        return episode
+
     @patch('argosd.settings.RSS_FEED', rss.SINGLE_MATCHING_ITEM)
     def test_follow_from_is_followed(self):
         with test_database(database, (Show, Episode)):
@@ -130,6 +139,25 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
             rssfeedparsertask = RSSFeedParserTask()
             episodes = rssfeedparsertask._parse_episodes_from_feed()
 
+            self.assertEqual(len(episodes), 0)
+
+    @patch('argosd.settings.RSS_FEED', rss.SINGLE_MATCHING_ITEM)
+    def test_save_already_downloaded_episode(self):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.save()
+
+            episode = self._get_new_dummy_episode(show)
+            episode.season = 2
+            episode.episode = 3
+            episode.quality = 1080
+            episode.is_downloaded = True
+            episode.save()
+
+            rssfeedparsertask = RSSFeedParserTask()
+            rssfeedparsertask._deferred()
+
+            episodes = rssfeedparsertask._parse_episodes_from_feed()
             self.assertEqual(len(episodes), 0)
 
 
