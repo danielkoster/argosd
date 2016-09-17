@@ -174,27 +174,24 @@ class EpisodeDownloadTask(BaseTask):
             if now > download_after or \
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
-                self._download_episode(episode)
+                if self._download_episode(episode):
+                    # Delete all episodes from this show+season+episode
+                    # so we don't download another quality variant.
+                    to_delete = [item for item in episodes if
+                                 item != episode and
+                                 item.show == episode.show and
+                                 item.season == episode.season and
+                                 item.episode == episode.episode]
 
-                logging.info('Downloaded episode: %s', episode)
+                    for episode in to_delete:
+                        episode.delete_instance()
 
-                # Delete all episodes from this show+season+episode
-                # so we don't download another quality variant.
-                to_delete = [item for item in episodes if
-                             item != episode and
-                             item.show == episode.show and
-                             item.season == episode.season and
-                             item.episode == episode.episode]
+                    to_delete.append(episode)
 
-                for episode in to_delete:
-                    episode.delete_instance()
-
-                to_delete.append(episode)
-
-                # Remove all of them from the list so we don't iterate
-                # over them again. Alter the original list we are using.
-                episodes[:] = [episode for episode in episodes if
-                               episode not in to_delete]
+                    # Remove all of them from the list so we don't iterate
+                    # over them again. Alter the original list we are using.
+                    episodes[:] = [episode for episode in episodes if
+                                   episode not in to_delete]
 
     @staticmethod
     def _get_episodes():
@@ -207,17 +204,25 @@ class EpisodeDownloadTask(BaseTask):
     def _download_episode(episode):
         """Add the torrent from the episode to a torrent client.
         If a TorrentClientException is raised, log it and return
-        so other episodes can still be handled."""
+        so other episodes can still be handled.
+
+        Returns True if the episode is downloaded, or False if
+        something went wrong."""
         try:
             torrentclient = Transmission()
             torrentclient.download_torrent(episode.link)
 
             episode.is_downloaded = True
             episode.save()
+
+            logging.info('Downloaded episode: %s', episode)
+            return True
         except TorrentAlreadyDownloadedException:
             logging.info('Already downloaded episode %s, '
                          'marking as downloaded', episode)
             episode.is_downloaded = True
             episode.save()
+            return True
         except TorrentClientException as e:
             logging.critical('Exception in %s: %s', self.get_name(), e)
+            return False
