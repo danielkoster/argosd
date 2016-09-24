@@ -10,7 +10,7 @@ config = {
                     'to keep track of TV shows from an RSS feed.'),
     'author': 'Daniel Koster',
     'url': 'https://github.com/danielkoster/argosd',
-    'version': '0.1.0',
+    'version': '1.0.2',
     'data_files': [
         (settings.LOG_PATH, []),
         ('/etc/systemd/system/', ['install/argosd.service']),
