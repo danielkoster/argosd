@@ -13,3 +13,4 @@ QUALITY_THRESHOLD = 1080
 
 # These settings are supposed to be overwritten in a settings_local file.
 RSS_FEED = None
+TORRENTCLIENT_DOWNLOAD_DIR = None

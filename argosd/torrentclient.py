@@ -20,8 +20,8 @@ class TorrentClient(metaclass=ABCMeta):
     """Abastract class for a torrentclient."""
 
     @abstractmethod
-    def download_torrent(self, torrent_link):
-        """Add a torrent file from a URL to the client."""
+    def download_episode(self, episode):
+        """Add a torrent file from an episode to the client."""
         raise NotImplementedError
 
     @staticmethod
@@ -47,16 +47,35 @@ class Transmission(TorrentClient):
         except transmissionrpc.TransmissionError as e:
             self.raise_exception(str(e))
 
-    def download_torrent(self, torrent_link):
+    def download_episode(self, episode):
         """Add a torrent file from a URL to the client."""
         try:
-            torrent = self._client.add_torrent(torrent_link)
+            path = self._get_download_dir(episode)
+            torrent = self._client.add_torrent(episode.link, download_dir=path)
             if not torrent:
                 message = 'Could not add torrent "{}" to Transmission' \
-                    .format(torrent_link)
+                    .format(episode.link)
                 raise TorrentClientException(message)
         except transmissionrpc.TransmissionError as e:
             if e.message == 'Query failed with result "duplicate torrent".':
                 raise TorrentAlreadyDownloadedException()
 
             self.raise_exception(str(e))
+
+    def _get_download_dir(self, episode):
+        """Returns the path to the location where the torrentclient will
+           download files to."""
+        # Check for optional override in settings file
+        if settings.TORRENTCLIENT_DOWNLOAD_DIR:
+            path_prefix = settings.TORRENTCLIENT_DOWNLOAD_DIR
+        else:
+            try:
+                session = transmissionrpc.Session(self._client)
+                # Retrieve data from Transmission
+                session.update()
+                path_prefix = session.download_dir
+            except transmissionrpc.TransmissionError as e:
+                self.raise_exception(str(e))
+
+        path_suffix = episode.show.title.lower().replace(' ', '.')
+        return "{}/{}".format(path_prefix, path_suffix)

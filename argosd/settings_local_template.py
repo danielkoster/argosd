@@ -15,3 +15,8 @@ TRANSMISSION_PASSWORD = ''
 """Create an API token. You will have to send this token
 with each API request you make. Keep it safe!"""
 API_TOKEN = ''
+
+"""Optional override for the download directory where the torrentclient
+will download the episodes to. If set to None, episodes will be downloaded
+to the default location as determined by the torrentclient."""
+TORRENTCLIENT_DOWNLOAD_DIR = None
