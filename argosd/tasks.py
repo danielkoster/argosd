@@ -210,7 +210,7 @@ class EpisodeDownloadTask(BaseTask):
         something went wrong."""
         try:
             torrentclient = Transmission()
-            torrentclient.download_torrent(episode.link)
+            torrentclient.download_episode(episode)
 
             episode.is_downloaded = True
             episode.save()
