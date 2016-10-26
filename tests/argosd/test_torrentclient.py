@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from argosd.torrentclient import Transmission
 from argosd.models import Show, Episode
@@ -25,7 +25,8 @@ class TransmissionTaskTestCase(unittest.TestCase):
         return episode
 
     @patch('argosd.settings.TORRENTCLIENT_DOWNLOAD_DIR', '/tmp')
-    def test_download_dir(self):
+    @patch('transmissionrpc.Client', new_callable=Mock)
+    def test_download_dir(self, transmissionrpc_client):
         show = self._get_new_dummy_show()
         episode = self._get_new_dummy_episode(show)
 
