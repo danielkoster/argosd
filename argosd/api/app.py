@@ -12,19 +12,9 @@ from argosd.api.resources.episodes import EpisodesResource
 class Api:
     """Creates a RESTful API."""
 
-    _app = None
-    _api = None
     _process = None
 
     def __init__(self):
-        self._app = Flask('argosd')
-
-        self._api = flask_restful.Api(self._app)
-
-        self._api.add_resource(ShowsResource, '/shows')
-        self._api.add_resource(ShowResource, '/shows/<int:show_id>')
-        self._api.add_resource(EpisodesResource, '/episodes')
-
         self._process = Process(name='Api', target=self.deferred)
 
     def run(self):
@@ -43,8 +33,12 @@ class Api:
     def deferred(self):
         """Runs the API, listens to external requests."""
         # Remove all log handlers set in the main process
-        for handler in logging.root.handlers[:]:
-            logging.root.removeHandler(handler)
+        app = Flask('argosd')
+        api = flask_restful.Api(app)
+
+        api.add_resource(ShowsResource, '/shows')
+        api.add_resource(ShowResource, '/shows/<int:show_id>')
+        api.add_resource(EpisodesResource, '/episodes')
 
         logfile = '{}/api.log'.format(settings.LOG_PATH)
         logformat = '%(message)s'
@@ -52,4 +46,4 @@ class Api:
         logging.basicConfig(format=logformat, level=logging.INFO,
                             filename=logfile, filemode='a')
 
-        self._app.run(host='0.0.0.0', port=27467)
+        app.run(host='0.0.0.0', port=27467)
