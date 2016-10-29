@@ -7,6 +7,7 @@ import feedparser
 from peewee import DoesNotExist, IntegrityError
 
 from argosd import settings
+from argosd.bots import TelegramBot
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
 from argosd.torrentclient import Transmission, TorrentClientException, \
@@ -175,6 +176,9 @@ class EpisodeDownloadTask(BaseTask):
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
                 if self._download_episode(episode):
+                    # Send the user a notification about this episode
+                    self._notify_user(episode)
+
                     # Delete all episodes from this show+season+episode
                     # so we don't download another quality variant.
                     to_delete = [item for item in episodes if
@@ -226,3 +230,14 @@ class EpisodeDownloadTask(BaseTask):
         except TorrentClientException as e:
             logging.critical('Exception in %s: %s', self.get_name(), e)
             return False
+
+    @staticmethod
+    def _notify_user(episode):
+        """Sends the user a notification about this episode."""
+        if settings.TELEGRAM_BOT_TOKEN:
+            bot = TelegramBot()
+            text = 'A new episode has been downloaded!\n' \
+                   '{} - S{}E{} - {}p'
+            text = text.format(episode.show.title, episode.season,
+                               episode.episode, episode.quality)
+            bot.send_message(text)

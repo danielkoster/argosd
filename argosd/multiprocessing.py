@@ -1,35 +1,32 @@
-import threading
 import logging
+from multiprocessing import Process
 from abc import ABCMeta, abstractmethod
 
 
-class Threaded(metaclass=ABCMeta):
-    """Abstract class used to make a class run in an own thread."""
+class Multiprocessed(metaclass=ABCMeta):
+    """Abstract class used to make a class run in an own process."""
 
-    _stop_event = None
-    _thread = None
+    _process = None
 
     def __init__(self):
-        self._stop_event = threading.Event()
-        self._thread = threading.Thread(name=self.get_name(),
-                                        target=self.deferred)
+        self._process = Process(name=self.get_name(), target=self.deferred)
 
     def get_name(self):
         """Returns the name of the current class."""
         return self.__class__.__name__
 
     def run(self):
-        """Starts the thread."""
+        """Starts the process."""
         logging.debug('%s starting', self.get_name())
-        self._thread.start()
+        self._process.start()
         logging.debug('%s started', self.get_name())
 
     def stop(self):
-        """Stop the current thread and wait for it to finish."""
+        """Stop the current process and wait for it to finish."""
         logging.debug('%s stopping', self.get_name())
-        self._stop_event.set()
         self._stop()
-        self._thread.join()
+        self._process.terminate()
+        self._process.join()
         logging.debug('%s stopped', self.get_name())
 
     def _stop(self):
@@ -38,5 +35,5 @@ class Threaded(metaclass=ABCMeta):
 
     @abstractmethod
     def deferred(self):
-        """The method being called when the thread starts."""
+        """The method being called when the process starts."""
         raise NotImplementedError

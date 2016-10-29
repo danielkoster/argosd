@@ -20,3 +20,7 @@ API_TOKEN = ''
 will download the episodes to. If set to None, episodes will be downloaded
 to the default location as determined by the torrentclient."""
 TORRENTCLIENT_DOWNLOAD_DIR = None
+
+"""Optional token for Telegram bot. This bot will send you notifications
+whenever a new episode is downloaded."""
+TELEGRAM_BOT_TOKEN = None

@@ -14,14 +14,14 @@ class TaskScheduler(Threaded):
     _queue = None
 
     def __init__(self, queue):
-        self._queue = queue
         super().__init__()
+        self._queue = queue
 
     def deferred(self):
         """Called from the thread, schedules pending tasks."""
         self._create_schedules()
 
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             schedule.run_pending()
             sleep(1)
 
@@ -48,12 +48,12 @@ class TaskRunner(Threaded):
     _queue = None
 
     def __init__(self, queue):
-        self._queue = queue
         super().__init__()
+        self._queue = queue
 
     def deferred(self):
         """Called from the thread, runs queued tasks."""
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             task = self._get_task_from_queue()
 
             # Only run a task if we found one

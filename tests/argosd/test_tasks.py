@@ -195,6 +195,8 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         # _get_episodes always returns highest quality first
         episodedownloadtask._get_episodes = MagicMock(return_value=[
             episode_two, episode_one])
+        # Don't send actual notifications to users
+        episodedownloadtask._notify_user = MagicMock()
         episodedownloadtask._deferred()
 
         episodedownloadtask._download_episode.assert_called_once_with(
@@ -229,6 +231,8 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         episodedownloadtask._download_episode = MagicMock()
 
         episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
+        # Don't send actual notifications to users
+        episodedownloadtask._notify_user = MagicMock()
         episodedownloadtask._deferred()
         episodedownloadtask._download_episode.call_count = 0
 

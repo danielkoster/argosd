@@ -5,30 +5,13 @@ import flask_restful
 from flask import Flask
 
 from argosd import settings
+from argosd.multiprocessing import Multiprocessed
 from argosd.api.resources.shows import ShowsResource, ShowResource
 from argosd.api.resources.episodes import EpisodesResource
 
 
-class Api:
+class Api(Multiprocessed):
     """Creates a RESTful API."""
-
-    _process = None
-
-    def __init__(self):
-        self._process = Process(name='Api', target=self.deferred)
-
-    def run(self):
-        """Starts the API in it's own process."""
-        logging.debug('API starting')
-        self._process.start()
-        logging.debug('API started')
-
-    def stop(self):
-        """Stops the API and waits for it to finish."""
-        logging.debug('API stopping')
-        self._process.terminate()
-        self._process.join()
-        logging.debug('API stopped')
 
     def deferred(self):
         """Runs the API, listens to external requests."""
