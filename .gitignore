@@ -7,3 +7,4 @@ tags
 cover
 coverage.xml
 *.db
+argosd_chat_id

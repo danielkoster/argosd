@@ -8,6 +8,7 @@ from peewee import *
 from argosd import settings
 from argosd.scheduling import TaskScheduler, TaskRunner
 from argosd.models import Show, Episode
+from argosd.bots import TelegramBot
 from argosd.api.app import Api
 
 
@@ -17,6 +18,7 @@ class ArgosD:
     taskscheduler = None
     taskrunner = None
     api = None
+    bot = None
 
     def __init__(self):
         queue = PriorityQueue()
@@ -24,15 +26,27 @@ class ArgosD:
         self.taskrunner = TaskRunner(queue)
         self.api = Api()
 
+        if settings.TELEGRAM_BOT_TOKEN:
+            self.bot = TelegramBot()
+
     def run(self):
         """Starts all runners and processes."""
         logging.info('ArgosD starting')
 
         self._create_database()
 
+        logging.info('Starting taskscheduler')
         self.taskscheduler.run()
+
+        logging.info('Starting taskrunner')
         self.taskrunner.run()
+
+        logging.info('Starting API')
         self.api.run()
+
+        if settings.TELEGRAM_BOT_TOKEN:
+            logging.info('Starting telegrambot')
+            self.bot.run()
 
         # Stop everything when a SIGTERM is received
         signal.signal(signal.SIGTERM, self._handle_signal)
@@ -60,17 +74,18 @@ class ArgosD:
         """Stops all runners and processes."""
         logging.info('ArgosD stopping')
 
-        # Tell the scheduler to stop
         logging.info('Telling taskscheduler to stop')
         self.taskscheduler.stop()
 
-        # Tell the taskrunner to stop
         logging.info('Telling taskrunner to stop')
         self.taskrunner.stop()
 
-        # Tell the api to stop
         logging.info('Telling API to stop')
         self.api.stop()
+
+        if settings.TELEGRAM_BOT_TOKEN:
+            logging.info('Telling telegrambot to stop')
+            self.bot.stop()
 
         logging.info('ArgosD stopped')
         sys.exit(0)
