@@ -27,7 +27,7 @@ For example, if you forget to enter the URL of your RSS feed in the settings fil
 an error will be logged.
 
 ## Running unit tests
-To run unit tests first install testing dependencies with `pip install -r requirements-test.txt`.
+To run unit tests first install testing dependencies with `pip install -r requirements-dev.txt`.
 After this, run `nosetests tests` to start testing.
 
 ## Disclaimer
