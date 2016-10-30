@@ -2,6 +2,7 @@
 
 TelegramBot: A bot to interact with a user on Telegram.
 """
+import os
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -29,8 +30,9 @@ class TelegramBot(Threaded):
         """Sends a message to the user without the need for
         initial input from the user."""
         chat_id = None
-        with open(self._chat_id_file, 'r') as file:
-            chat_id = file.read()
+        if os.path.isfile(self._chat_id_file):
+            with open(self._chat_id_file, 'r') as file:
+                chat_id = file.read()
 
         if chat_id:
             self._updater.bot.send_message(chat_id=chat_id, text=text)
