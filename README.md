@@ -5,7 +5,8 @@
 
 Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any
-other system meeting the requirements.
+other system meeting the requirements. It features a Telegram bot keeping you
+updated about newly downloaded episodes.
 
 After starting, a RESTful API is available on port 27467. You can find how to use
 this API in the [API documentation](docs/api.md).
@@ -17,8 +18,7 @@ this API in the [API documentation](docs/api.md).
 ## Installation
 See the [installation instructions](docs/installation.md)
 for a step-by-step guide to install this application.
-This adds a systemd service named "argosd" to your system
-and creates /var/log/argosd/ where logfiles are stored.
+This adds a systemd service named "argosd" to your system.
 You can start it manually with `systemctl start argosd`.
 
 ## Troubleshooting
@@ -32,4 +32,4 @@ After this, run `nosetests tests` to start testing.
 
 ## Disclaimer
 Downloading copyrighted content to which you do not own the rights might be illegal in your country.
-The author of this project is **not** responsible for your use of it.
+The author of this project is **not** responsible for your use of this tool.
