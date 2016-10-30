@@ -25,6 +25,15 @@ Create and activate a python3 virtual environment. In here we can install all th
 `argosd$ cp /opt/argosd/argosd/settings_local_template.py /opt/argosd/argosd/settings_local.py`  
 Copy the settings template and fill it with required data.
 
+### Telegram bot
+If you would like to have a bot send you notifications about downloaded episodes,
+you will have to register a Telegram bot and retrieve its token.
+You can create a bot by talking to [BotFather](https://telegram.me/botfather) on Telegram.
+Send him the command `/newbot` and he will help you create a bot.
+Afterwards he will show you the token for this bot.
+You can also explicitly request it by sending BotFather the command `/token`.
+After ArgosD is running, you can activate the bot by sending it the command `/start` in a message.
+
 ## Install dependencies
 `argosd$ pip install -r /opt/argosd/requirements.txt`  
 This installs all the required dependencies into the virtual environment.
