@@ -15,7 +15,6 @@ class Api(Multiprocessed):
 
     def deferred(self):
         """Runs the API, listens to external requests."""
-        # Remove all log handlers set in the main process
         app = Flask('argosd')
         api = flask_restful.Api(app)
 
