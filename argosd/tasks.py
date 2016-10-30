@@ -48,7 +48,7 @@ class RSSFeedParserTask(BaseTask):
     def _deferred(self):
         episodes = self._parse_episodes_from_feed()
 
-        logging.info('Relevant episodes found in RSS feed: %d', len(episodes))
+        logging.debug('Relevant episodes found in RSS feed: %d', len(episodes))
 
         # Save all episodes we haven't stored yet
         for episode in episodes:
