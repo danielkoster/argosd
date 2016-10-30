@@ -1,3 +1,7 @@
+"""This module contains functionality related to multiprocessing.
+
+Multiprocessed: wrapper to easily let classes run in a separate process.
+"""
 import logging
 from multiprocessing import Process
 from abc import ABCMeta, abstractmethod

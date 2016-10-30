@@ -1,14 +1,18 @@
+"""This module contains functionality related to bots.
+
+TelegramBot: A bot to interact with a user on Telegram.
+"""
 import logging
 
-from telegram import Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from argosd import settings
-from argosd.models import Episode
 from argosd.threading import Threaded
 
 
 class TelegramBot(Threaded):
+    """A bot that offers interactive communication on Telegram.
+    It notifies the user of any downloaded episodes."""
 
     _updater = None
     _chat_id_file = None
@@ -22,6 +26,8 @@ class TelegramBot(Threaded):
         self._updater = Updater(token=settings.TELEGRAM_BOT_TOKEN)
 
     def send_message(self, text):
+        """Sends a message to the user without the need for
+        initial input from the user."""
         chat_id = None
         with open(self._chat_id_file, 'r') as file:
             chat_id = file.read()
