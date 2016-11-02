@@ -1,3 +1,9 @@
+"""This module describes all the persistent models.
+
+Show: Represents a TV show that can be followed.
+Episode: Represents an episode belonging to a TV show.
+"""
+
 import logging
 
 from peewee import *

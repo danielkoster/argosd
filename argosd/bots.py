@@ -78,8 +78,7 @@ class TelegramBot(Threaded):
 
         return chat_id
 
-    @staticmethod
-    def _command_start(bot, update):
+    def _command_start(self, bot, update):
         # Save the chat ID to a file for future reference
         with open(self._chat_id_file, 'w') as file:
             file.write(str(update.message.chat_id))
@@ -101,6 +100,7 @@ class TelegramBot(Threaded):
 
     @staticmethod
     def _handle_error(bot, update, error):
+        del bot  # Unused
         logging.error('Update "%s" caused error "%s"' % (update, error))
 
     def _handle_button(self, bot, update):
@@ -113,8 +113,8 @@ class TelegramBot(Threaded):
                 text += '\n[Episode downloaded]'
             else:
                 text += '\n[Error downloading episode]'
-                reply_markup = self._create_button_markup('Download now',
-                                                          query.data)
+                reply_markup = self.create_button_markup('Download now',
+                                                         query.data)
         else:
             logging.warning('Unknown command received: %s' % query.data)
 
@@ -123,7 +123,8 @@ class TelegramBot(Threaded):
                               message_id=query.message.message_id,
                               reply_markup=reply_markup)
 
-    def _process_download_command(self, data):
+    @staticmethod
+    def _process_download_command(data):
         matches = re.search('download (\d{1,})', data)
         if matches is not None:
             episode_id = int(matches.group(1))
@@ -139,6 +140,7 @@ class TelegramBot(Threaded):
             return False
 
     @staticmethod
-    def _create_button_markup(text, callback_data):
+    def create_button_markup(text, callback_data):
+        """Creates markup for a single inline keyboard button in a message."""
         keyboard = [[InlineKeyboardButton(text, callback_data=callback_data)]]
         return InlineKeyboardMarkup(keyboard)

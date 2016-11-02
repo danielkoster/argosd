@@ -169,8 +169,8 @@ class RSSFeedParserTask(BaseTask):
                                episode.episode, episode.quality)
 
             callback_data = 'download {}'.format(episode.id)
-            reply_markup = bot._create_button_markup('Download now',
-                                                     callback_data)
+            reply_markup = bot.create_button_markup('Download now',
+                                                    callback_data)
 
             bot.send_message(text, reply_markup=reply_markup)
 
