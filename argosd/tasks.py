@@ -10,8 +10,6 @@ from argosd import settings
 from argosd.bots import TelegramBot
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
-from argosd.torrentclient import Transmission, TorrentClientException, \
-    TorrentAlreadyDownloadedException
 
 
 class BaseTask(Threaded):
@@ -56,6 +54,7 @@ class RSSFeedParserTask(BaseTask):
             if self._get_existing_episode_from_database(episode) is None:
                 try:
                     episode.save()
+                    self._notify_user(episode)
                     logging.info('Saved episode: %s', episode)
                 except IntegrityError:
                     logging.error('Could not save episode to database')
@@ -159,6 +158,22 @@ class RSSFeedParserTask(BaseTask):
 
         return episode
 
+    @staticmethod
+    def _notify_user(episode):
+        """Sends the user a notification about this episode."""
+        if settings.TELEGRAM_BOT_TOKEN:
+            bot = TelegramBot()
+            text = 'A new episode has been found!\n' \
+                   '{} - S{}E{} - {}p'
+            text = text.format(episode.show.title, episode.season,
+                               episode.episode, episode.quality)
+
+            callback_data = 'download {}'.format(episode.id)
+            reply_markup = bot.create_button_markup('Download now',
+                                                    callback_data)
+
+            bot.send_message(text, reply_markup=reply_markup)
+
 
 class EpisodeDownloadTask(BaseTask):
     """Task to retrieve episodes ready to be downloaded and sending them
@@ -175,7 +190,7 @@ class EpisodeDownloadTask(BaseTask):
             if now > download_after or \
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
-                if self._download_episode(episode):
+                if episode.download():
                     # Send the user a notification about this episode
                     self._notify_user(episode)
 
@@ -203,33 +218,6 @@ class EpisodeDownloadTask(BaseTask):
         return list(Episode.select()
                     .where(Episode.is_downloaded == 0)
                     .order_by(Episode.quality.desc()))
-
-    @staticmethod
-    def _download_episode(episode):
-        """Add the torrent from the episode to a torrent client.
-        If a TorrentClientException is raised, log it and return
-        so other episodes can still be handled.
-
-        Returns True if the episode is downloaded, or False if
-        something went wrong."""
-        try:
-            torrentclient = Transmission()
-            torrentclient.download_episode(episode)
-
-            episode.is_downloaded = True
-            episode.save()
-
-            logging.info('Downloaded episode: %s', episode)
-            return True
-        except TorrentAlreadyDownloadedException:
-            logging.info('Already downloaded episode %s, '
-                         'marking as downloaded', episode)
-            episode.is_downloaded = True
-            episode.save()
-            return True
-        except TorrentClientException as e:
-            logging.critical('Exception in %s: %s', self.get_name(), e)
-            return False
 
     @staticmethod
     def _notify_user(episode):
