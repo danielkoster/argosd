@@ -10,8 +10,6 @@ from peewee import *
 from playhouse.shortcuts import model_to_dict
 
 from argosd import settings
-from argosd.torrentclient import Transmission, TorrentClientException, \
-    TorrentAlreadyDownloadedException
 
 
 class BaseModel(Model):
@@ -61,30 +59,6 @@ class Episode(BaseModel):
             Episode.created_at, Episode.link])
         representation['created_at'] = int(self.created_at.strftime('%s'))
         return representation
-
-    def download(self):
-        """Add the torrent from the episode to a torrent client.
-
-        Returns True if the episode is downloaded, or False if
-        something went wrong."""
-        try:
-            torrentclient = Transmission()
-            torrentclient.download_episode(self)
-
-            self.is_downloaded = True
-            self.save()
-
-            logging.info('Downloaded episode: %s', self)
-            return True
-        except TorrentAlreadyDownloadedException:
-            logging.info('Already downloaded episode %s, '
-                         'marking as downloaded', self)
-            self.is_downloaded = True
-            self.save()
-            return True
-        except TorrentClientException as e:
-            logging.critical('TorrentClientException: %s', e)
-            return False
 
     class Meta:
         indexes = (

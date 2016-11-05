@@ -181,32 +181,36 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         episode.quality = 720
         return episode
 
-    def test_highest_quality_is_downloaded(self):
-        show = self._get_new_dummy_show()
+    @patch('argosd.torrentclient.transmissionrpc.Client',
+           new_callable=MagicMock)
+    @patch('argosd.tasks.Transmission.download_episode',
+           new_callable=MagicMock)
+    def test_highest_quality_is_downloaded(self, download_episode_patch,
+                                           transmissionrpc_client):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.save()
 
-        episode_one = self._get_new_dummy_episode(show)
-        # Don't download episode
-        episode_one.download = MagicMock()
+            episode_one = self._get_new_dummy_episode(show)
+            episode_one.save()
 
-        episode_two = self._get_new_dummy_episode(show)
-        episode_two.quality = 1080
-        # Don't send actual notifications to users and don't download episode
-        episode_two._notify_user = MagicMock()
-        episode_two.download = MagicMock()
+            episode_two = self._get_new_dummy_episode(show)
+            episode_two.quality = 1080
+            episode_two.save()
 
-        episodedownloadtask = EpisodeDownloadTask()
+            episodedownloadtask = EpisodeDownloadTask()
 
-        # _get_episodes always returns highest quality first
-        episodedownloadtask._get_episodes = MagicMock(return_value=[
-            episode_two, episode_one])
-        # Don't send actual notifications to users
-        episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask.deferred()
+            # _get_episodes always returns highest quality first
+            episodedownloadtask._get_episodes = MagicMock(return_value=[
+                episode_two, episode_one])
+            # Don't send actual notifications to users
+            episodedownloadtask._notify_user = MagicMock()
+            episodedownloadtask.deferred()
 
-        episode_one.download.assert_not_called()
+            download_episode_patch.assert_called_once_with(episode_two)
 
-        episodedownloadtask._notify_user.assert_called_once_with(
-            episode_two)
+            episodedownloadtask._notify_user.assert_called_once_with(
+                episode_two)
 
     def test_get_episodes_returns_highest_quality_first(self):
         with test_database(database, (Show, Episode)):
@@ -227,27 +231,38 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
             self.assertEqual(episodes[0].id, episode_two.id)
             self.assertEqual(episodes[1].id, episode_one.id)
 
-    @patch.object(Episode, 'download')
-    def test_wait_minutes_for_higher_quality_is_followed(self, download_patch):
-        show = self._get_new_dummy_show()
-        show.wait_minutes_for_better_quality = 5
+    @patch('argosd.torrentclient.transmissionrpc.Client',
+           new_callable=MagicMock)
+    @patch('argosd.tasks.Transmission.download_episode',
+           new_callable=MagicMock)
+    def test_wait_for_higher_quality_is_followed(self, download_episode_patch,
+                                                 transmissionrpc_client):
+        with test_database(database, (Show, Episode)):
+            show = self._get_new_dummy_show()
+            show.wait_minutes_for_better_quality = 5
+            show.save()
 
-        episode = self._get_new_dummy_episode(show)
+            episode = self._get_new_dummy_episode(show)
+            episode.save()
 
-        episodedownloadtask = EpisodeDownloadTask()
+            episodedownloadtask = EpisodeDownloadTask()
 
-        episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
-        # Don't send actual notifications to users
-        episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask.deferred()
-        self.assertEqual(download_patch.call_count, 0)
+            episodedownloadtask._get_episodes = MagicMock(
+                return_value=[episode])
 
-        # It should be downloaded if it was created 10 minutes ago,
-        # because it only has to wait for 5 minutes.
-        episode.created_at = datetime.now() - timedelta(minutes=10)
+            # Don't send actual notifications to users
+            episodedownloadtask._notify_user = MagicMock()
+            episodedownloadtask.deferred()
+            self.assertEqual(download_episode_patch.call_count, 0)
 
-        episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
-        # Don't send actual notifications to users
-        episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask.deferred()
-        self.assertEqual(download_patch.call_count, 1)
+            # It should be downloaded if it was created 10 minutes ago,
+            # because it only has to wait for 5 minutes.
+            episode.created_at = datetime.now() - timedelta(minutes=10)
+
+            episodedownloadtask._get_episodes = MagicMock(
+                return_value=[episode])
+            # Don't send actual notifications to users
+            episodedownloadtask._notify_user = MagicMock()
+            episodedownloadtask.deferred()
+
+            download_episode_patch.assert_called_once_with(episode)
