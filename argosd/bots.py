@@ -13,10 +13,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, \
 
 from argosd import settings
 from argosd.models import Episode
-from argosd.threading import Threaded
+from argosd.parallelising import Multiprocessed
 
 
-class TelegramBot(Threaded):
+class TelegramBot(Multiprocessed):
     """A bot that offers interactive communication on Telegram.
     It notifies the user of any downloaded episodes."""
 
@@ -33,6 +33,19 @@ class TelegramBot(Threaded):
 
     def deferred(self):
         """Runs the TelegramBot, adds handlers and waits for input."""
+        logfile = '{}/telegrambot.log'.format(settings.LOG_PATH)
+        logformat = '%(message)s'
+
+        logging.basicConfig(format=logformat, level=logging.INFO,
+                            filename=logfile, filemode='a')
+
+        self._create_handlers()
+
+        self.send_message('ArgosD is running again!')
+
+        self._updater.start_polling()
+
+    def _create_handlers(self):
         start_handler = CommandHandler('start', self._command_start)
         self._updater.dispatcher.add_handler(start_handler)
 
@@ -48,12 +61,8 @@ class TelegramBot(Threaded):
 
         self._updater.dispatcher.add_error_handler(self._handle_error)
 
-        self.send_message('ArgosD is running again!')
-
-        self._updater.start_polling()
-
-    def _stop(self):
-        """Stops the updater before stopping the thread."""
+    def before_stop(self):
+        """Stops the updater before stopping the process."""
         self.send_message('ArgosD is shutting down.')
         self._updater.stop()
 

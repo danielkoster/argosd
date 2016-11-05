@@ -1,11 +1,10 @@
 import logging
-from multiprocessing import Process
 
 import flask_restful
 from flask import Flask
 
 from argosd import settings
-from argosd.multiprocessing import Multiprocessed
+from argosd.parallelising import Multiprocessed
 from argosd.api.resources.shows import ShowsResource, ShowResource
 from argosd.api.resources.episodes import EpisodesResource
 

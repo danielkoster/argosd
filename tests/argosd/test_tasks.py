@@ -156,7 +156,7 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
             episode.save()
 
             rssfeedparsertask = RSSFeedParserTask()
-            rssfeedparsertask._deferred()
+            rssfeedparsertask.deferred()
 
             episodes = rssfeedparsertask._parse_episodes_from_feed()
             self.assertEqual(len(episodes), 0)
@@ -201,7 +201,7 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
             episode_two, episode_one])
         # Don't send actual notifications to users
         episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask._deferred()
+        episodedownloadtask.deferred()
 
         episode_one.download.assert_not_called()
 
@@ -239,7 +239,7 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
         # Don't send actual notifications to users
         episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask._deferred()
+        episodedownloadtask.deferred()
         self.assertEqual(download_patch.call_count, 0)
 
         # It should be downloaded if it was created 10 minutes ago,
@@ -249,5 +249,5 @@ class EpisodeDownloadTaskTestCase(unittest.TestCase):
         episodedownloadtask._get_episodes = MagicMock(return_value=[episode])
         # Don't send actual notifications to users
         episodedownloadtask._notify_user = MagicMock()
-        episodedownloadtask._deferred()
+        episodedownloadtask.deferred()
         self.assertEqual(download_patch.call_count, 1)
