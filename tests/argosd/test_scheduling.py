@@ -32,11 +32,11 @@ class SchedulingTestCase(unittest.TestCase):
         self.assertEqual(taskscheduler._queue.qsize(), 3)
 
         # Check order of tasks in queue, PRIORITY_HIGH should be first
-        task = taskrunner._get_task_from_queue()
+        _, task = taskrunner._queue.get(block=False)
         self.assertEqual(task.priority, BaseTask.PRIORITY_HIGH)
 
-        task = taskrunner._get_task_from_queue()
+        _, task = taskrunner._queue.get(block=False)
         self.assertEqual(task.priority, BaseTask.PRIORITY_NORMAL)
 
-        task = taskrunner._get_task_from_queue()
+        _, task = taskrunner._queue.get(block=False)
         self.assertEqual(task.priority, BaseTask.PRIORITY_LOW)
