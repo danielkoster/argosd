@@ -1,6 +1,6 @@
 [Unit]
 Description=ArgosD service
-After=network.target
+After=network-online.target
 
 [Service]
 ExecStart=/opt/argosd/.virtualenv/bin/python /opt/argosd/main.py
