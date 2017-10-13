@@ -4,8 +4,8 @@ from queue import Empty
 
 import schedule
 
-from argosd.parallelising import Threaded
 from argosd.tasks import RSSFeedParserTask, EpisodeDownloadTask
+from argosd.threading import Threaded
 
 
 class TaskScheduler(Threaded):

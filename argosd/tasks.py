@@ -1,5 +1,6 @@
 import logging
 import re
+from abc import abstractmethod
 from datetime import datetime, timedelta
 
 import feedparser
@@ -7,8 +8,8 @@ from peewee import DoesNotExist, IntegrityError
 
 from argosd import settings
 from argosd.bots import TelegramBot
+from argosd.threading import Threaded
 from argosd.models import Show, Episode
-from argosd.parallelising import Threaded
 from argosd.torrentclient import Transmission
 
 
@@ -25,11 +26,25 @@ class BaseTask(Threaded):
         """Compare to another task, sort by priority."""
         return self.priority - other.priority
 
+    def deferred(self):
+        """A task is run in it's own thread, every exception is logged."""
+        try:
+            self._deferred()
+        except Exception as e:
+            logging.critical('Exception in %s: %s', self.get_name(), e)
+
+        logging.debug('%s stopped', self.get_name())
+
+    @abstractmethod
+    def _deferred(self):
+        """The main method of a task."""
+        raise NotImplementedError
+
 
 class RSSFeedParserTask(BaseTask):
     """Task to retrieve and download torrents from the RSS feed."""
 
-    def deferred(self):
+    def _deferred(self):
         episodes = self._parse_episodes_from_feed()
 
         logging.debug('Relevant episodes found in RSS feed: %d', len(episodes))
@@ -165,7 +180,7 @@ class EpisodeDownloadTask(BaseTask):
     """Task to retrieve episodes ready to be downloaded and sending them
     to a torrentclient."""
 
-    def deferred(self):
+    def _deferred(self):
         episodes = self._get_episodes()
         torrentclient = Transmission()
 

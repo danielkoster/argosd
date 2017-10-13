@@ -156,7 +156,7 @@ class RSSFeedParserTaskTestCase(unittest.TestCase):
             episode.save()
 
             rssfeedparsertask = RSSFeedParserTask()
-            rssfeedparsertask.deferred()
+            rssfeedparsertask._deferred()
 
             episodes = rssfeedparsertask._parse_episodes_from_feed()
             self.assertEqual(len(episodes), 0)
