@@ -13,6 +13,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, \
 
 from argosd import settings
 from argosd.models import Episode
+from argosd.torrentclient import Transmission, TorrentClientException
 from argosd.threading import Threaded
 
 
@@ -130,10 +131,18 @@ class TelegramBot(Threaded):
             episode_id = int(matches.group(1))
             try:
                 episode = Episode.get(Episode.id == episode_id)
-                return episode.download()
+                torrentclient = Transmission()
+
+                torrentclient.download_episode(episode)
+                episode.is_downloaded = True
+                episode.save()
+                return True
             except DoesNotExist:
                 error = 'Tried to download non-existing episode with ID: %d'
                 logging.error(error % episode_id)
+                return False
+            except TorrentClientException as e:
+                logging.error('TorrentClientException occured: %s' % str(e))
                 return False
         else:
             logging.error('Incorrect download command received: %s' % data)

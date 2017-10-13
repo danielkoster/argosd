@@ -6,13 +6,10 @@ from argosd import settings
 
 
 class TorrentClientException(Exception):
-    """Exception raised when connection errors occur."""
-    pass
-
-
-class TorrentAlreadyDownloadedException(Exception):
-    """Exception raised when a torrent is added to a torrentclient,
-    but the torrentclient already has downloaded it."""
+    """Generic exception thrown when an issue in connectivity with the
+       torrentclient occurs.
+       All exceptions should be converted to this type
+       so they can be handled outside of this scope."""
     pass
 
 
@@ -21,15 +18,8 @@ class TorrentClient(metaclass=ABCMeta):
 
     @abstractmethod
     def download_episode(self, episode):
-        """Add a torrent file from an episode to the client."""
+        """Add the torrent from the episode to a torrent client."""
         raise NotImplementedError
-
-    @staticmethod
-    def raise_exception(message):
-        """Shorthand to raise a TorrentClientException.
-        All exceptions should be converted to this type
-        so they can be handled outside of this scope."""
-        raise TorrentClientException(message)
 
 
 class Transmission(TorrentClient):
@@ -45,22 +35,25 @@ class Transmission(TorrentClient):
                 user=settings.TRANSMISSION_USERNAME,
                 password=settings.TRANSMISSION_PASSWORD)
         except transmissionrpc.TransmissionError as e:
-            self.raise_exception(str(e))
+            raise TorrentClientException(str(e))
 
     def download_episode(self, episode):
-        """Add a torrent file from a URL to the client."""
+        """Add the torrent from the episode to a torrent client."""
         try:
             path = self._get_download_dir(episode)
             torrent = self._client.add_torrent(episode.link, download_dir=path)
-            if not torrent:
+            if torrent:
+                logging.info('Downloaded episode: %s', episode)
+            else:
                 message = 'Could not add torrent "{}" to Transmission' \
                     .format(episode.link)
                 raise TorrentClientException(message)
         except transmissionrpc.TransmissionError as e:
+            # Silently continue when episode is already downloaded
             if e.message == 'Query failed with result "duplicate torrent".':
-                raise TorrentAlreadyDownloadedException()
+                logging.info('Already downloaded episode %s', episode)
 
-            self.raise_exception(str(e))
+            raise TorrentClientException(str(e))
 
     def _get_download_dir(self, episode):
         """Returns the path to the location where the torrentclient will
@@ -75,7 +68,7 @@ class Transmission(TorrentClient):
                 session.update()
                 path_prefix = session.download_dir
             except transmissionrpc.TransmissionError as e:
-                self.raise_exception(str(e))
+                raise TorrentClientException(str(e))
 
         path_suffix = episode.show.title.lower().replace(' ', '.')
         return "{}/{}".format(path_prefix, path_suffix)

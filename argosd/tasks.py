@@ -10,6 +10,7 @@ from argosd import settings
 from argosd.bots import TelegramBot
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
+from argosd.torrentclient import Transmission
 
 
 class BaseTask(Threaded):
@@ -181,36 +182,39 @@ class EpisodeDownloadTask(BaseTask):
 
     def _deferred(self):
         episodes = self._get_episodes()
-        now = datetime.now()
+        torrentclient = Transmission()
 
         for episode in episodes:
             download_after = episode.created_at + timedelta(
                 minutes=episode.show.wait_minutes_for_better_quality)
 
-            if now > download_after or \
+            if datetime.now() > download_after or \
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
-                if episode.download():
-                    # Send the user a notification about this episode
-                    self._notify_user(episode)
+                torrentclient.download_episode(episode)
+                episode.is_downloaded = True
+                episode.save()
 
-                    # Delete all episodes from this show+season+episode
-                    # so we don't download another quality variant.
-                    to_delete = [item for item in episodes if
-                                 item != episode and
-                                 item.show == episode.show and
-                                 item.season == episode.season and
-                                 item.episode == episode.episode]
+                # Send the user a notification about this episode
+                self._notify_user(episode)
 
-                    for episode in to_delete:
-                        episode.delete_instance()
+                # Delete all episodes from this show+season+episode
+                # so we don't download another quality variant.
+                to_delete = [item for item in episodes if
+                             item != episode and
+                             item.show == episode.show and
+                             item.season == episode.season and
+                             item.episode == episode.episode]
 
-                    to_delete.append(episode)
+                for episode in to_delete:
+                    episode.delete_instance()
 
-                    # Remove all of them from the list so we don't iterate
-                    # over them again. Alter the original list we are using.
-                    episodes[:] = [episode for episode in episodes if
-                                   episode not in to_delete]
+                to_delete.append(episode)
+
+                # Remove all of them from the list so we don't iterate
+                # over them again. Alter the original list we are using.
+                episodes[:] = [episode for episode in episodes if
+                               episode not in to_delete]
 
     @staticmethod
     def _get_episodes():
