@@ -74,13 +74,16 @@ class Transmission(TorrentClient):
                 raise TorrentClientException(str(e))
 
         # Determine path suffix based on desired strategy
-        if settings.DOWNLOAD_STRUCTURE_STRATEGY == self.DOWNLOAD_STRUCTURE_DEFAULT:
+        if settings.DOWNLOAD_STRUCTURE_STRATEGY == \
+                self.DOWNLOAD_STRUCTURE_DEFAULT:
             path_suffix = episode.show.title.lower().replace(' ', '.')
-        elif settings.DOWNLOAD_STRUCTURE_STRATEGY == self.DOWNLOAD_STRUCTURE_PLEX:
+        elif settings.DOWNLOAD_STRUCTURE_STRATEGY == \
+                self.DOWNLOAD_STRUCTURE_PLEX:
             # Add leading zero, if needed
             season = str(episode.season).zfill(2)
             path_suffix = '{}/Season {}'.format(episode.show.title, season)
         else:
-            raise TorrentClientException('No download structure strategy is defined')
+            message = 'No download structure strategy is defined'
+            raise TorrentClientException(message)
 
         return "{}/{}".format(path_prefix, path_suffix)
