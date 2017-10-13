@@ -16,6 +16,13 @@ TRANSMISSION_PASSWORD = ''
 with each API request you make. Keep it safe!"""
 API_TOKEN = ''
 
+"""Defines how the directories where downloads are saved are structured.
+Possible options are:
+1 = Shows are lowercased, spaces replaced by periods.
+2 = Shows are grouped per season, foldernames can contain spaces.
+    This is particularly suited for Plex."""
+DOWNLOAD_STRUCTURE_STRATEGY = 1
+
 """Optional override for the download directory where the torrentclient
 will download the episodes to. If set to None, episodes will be downloaded
 to the default location as determined by the torrentclient."""

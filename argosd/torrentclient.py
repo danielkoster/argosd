@@ -16,6 +16,9 @@ class TorrentClientException(Exception):
 class TorrentClient(metaclass=ABCMeta):
     """Abastract class for a torrentclient."""
 
+    DOWNLOAD_STRUCTURE_DEFAULT = 1
+    DOWNLOAD_STRUCTURE_PLEX = 2
+
     @abstractmethod
     def download_episode(self, episode):
         """Add the torrent from the episode to a torrent client."""
@@ -70,5 +73,17 @@ class Transmission(TorrentClient):
             except transmissionrpc.TransmissionError as e:
                 raise TorrentClientException(str(e))
 
-        path_suffix = episode.show.title.lower().replace(' ', '.')
+        # Determine path suffix based on desired strategy
+        if settings.DOWNLOAD_STRUCTURE_STRATEGY == \
+                self.DOWNLOAD_STRUCTURE_DEFAULT:
+            path_suffix = episode.show.title.lower().replace(' ', '.')
+        elif settings.DOWNLOAD_STRUCTURE_STRATEGY == \
+                self.DOWNLOAD_STRUCTURE_PLEX:
+            # Add leading zero, if needed
+            season = str(episode.season).zfill(2)
+            path_suffix = '{}/Season {}'.format(episode.show.title, season)
+        else:
+            message = 'No download structure strategy is defined'
+            raise TorrentClientException(message)
+
         return "{}/{}".format(path_prefix, path_suffix)

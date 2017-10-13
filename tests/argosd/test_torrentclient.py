@@ -25,11 +25,25 @@ class TransmissionTaskTestCase(unittest.TestCase):
         return episode
 
     @patch('argosd.settings.TORRENTCLIENT_DOWNLOAD_DIR', '/tmp')
+    @patch('argosd.settings.DOWNLOAD_STRUCTURE_STRATEGY',
+           Transmission.DOWNLOAD_STRUCTURE_DEFAULT)
     @patch('transmissionrpc.Client', new_callable=Mock)
-    def test_download_dir(self, transmissionrpc_client):
+    def test_download_dir_default(self, transmissionrpc_client):
         show = self._get_new_dummy_show()
         episode = self._get_new_dummy_episode(show)
 
         client = Transmission()
         download_dir = client._get_download_dir(episode)
         self.assertEqual(download_dir, '/tmp/test.show')
+
+    @patch('argosd.settings.TORRENTCLIENT_DOWNLOAD_DIR', '/tmp')
+    @patch('argosd.settings.DOWNLOAD_STRUCTURE_STRATEGY',
+           Transmission.DOWNLOAD_STRUCTURE_PLEX)
+    @patch('transmissionrpc.Client', new_callable=Mock)
+    def test_download_dir_plex(self, transmissionrpc_client):
+        show = self._get_new_dummy_show()
+        episode = self._get_new_dummy_episode(show)
+
+        client = Transmission()
+        download_dir = client._get_download_dir(episode)
+        self.assertEqual(download_dir, '/tmp/Test show/Season 01')
