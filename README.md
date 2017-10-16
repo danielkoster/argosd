@@ -6,7 +6,9 @@
 Daemon for Argos, a Python project to keep track of TV shows from an RSS feed.
 This project is intended to be run on a Raspberry Pi, but should work on any
 other system meeting the requirements. It features a Telegram bot keeping you
-updated about newly downloaded episodes.
+updated about newly downloaded episodes. It can also create a directory structure
+which complies with the Plex-standard, allowing for easy integration with your
+[Plex](https://www.plex.tv) media server.
 
 After starting, a RESTful API is available on port 27467. You can find how to use
 this API in the [API documentation](docs/api.md).
