@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.1] - 2017-10-16
+### Fixed
+- Added missing import statement
+
 ## [1.2.0] - 2017-10-13
 ### Added
 - #38 Add interactive Telegram commands
@@ -48,6 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - This is the initial version. It is still in development and has not been used in a production environment.
 
+[1.2.1]: https://github.com/danielkoster/argosd/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/danielkoster/argosd/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/danielkoster/argosd/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/danielkoster/argosd/compare/v1.0.1...v1.0.2
