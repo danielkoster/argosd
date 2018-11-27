@@ -38,7 +38,7 @@ class Episode(BaseModel):
     """Episodes related to TV shows."""
 
     id = PrimaryKeyField()
-    show = ForeignKeyField(Show, related_name='episodes')
+    show = ForeignKeyField(Show, related_name='episodes', on_delete='CASCADE')
     link = CharField()
     season = IntegerField()
     episode = IntegerField()
