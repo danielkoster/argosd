@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2018-11-27
+### Changed
+- Added "on delete cascade" to foreign key
+
+### Removed
+- Removed default echo handler from Telegram bot
+
 ## [1.2.1] - 2017-10-16
 ### Fixed
 - Added missing import statement
