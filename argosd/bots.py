@@ -37,9 +37,6 @@ class TelegramBot(Threaded):
         start_handler = CommandHandler('start', self._command_start)
         self._updater.dispatcher.add_handler(start_handler)
 
-        echo_handler = MessageHandler(Filters.text, self._command_echo)
-        self._updater.dispatcher.add_handler(echo_handler)
-
         unknown_handler = MessageHandler(Filters.command,
                                          self._command_unknown)
         self._updater.dispatcher.add_handler(unknown_handler)
@@ -87,11 +84,6 @@ class TelegramBot(Threaded):
         message = 'Hi! I\'m ArgosD, keeping track of your TV shows. ' \
                   'I\'ll send you notifications whenever ' \
                   'new episodes are downloaded.'
-        bot.send_message(chat_id=update.message.chat_id, text=message)
-
-    @staticmethod
-    def _command_echo(bot, update):
-        message = 'Sorry, I don\'t speak that language.'
         bot.send_message(chat_id=update.message.chat_id, text=message)
 
     @staticmethod
