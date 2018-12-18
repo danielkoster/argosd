@@ -1,6 +1,9 @@
 from abc import ABCMeta, abstractmethod
+import os
+import tempfile
 
 import logging
+import requests
 import transmissionrpc
 
 from argosd import settings
@@ -45,7 +48,20 @@ class Transmission(TorrentClient):
         """Add the torrent from the episode to a torrent client."""
         try:
             path = self._get_download_dir(episode)
-            torrent = self._client.add_torrent(episode.link, download_dir=path)
+
+            # Download the torrent to a temporary file
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.torrent')
+            r = requests.get(episode.link, allow_redirects=True)
+            tmpfile.write(r.content)
+
+            # Allow the transmission-daemon user to read the file
+            os.chmod(tmpfile.name, 0o666)
+
+            torrent = self._client.add_torrent(tmpfile.name, download_dir=path)
+
+            # Delete the file
+            tmpfile.close()
+
             if torrent:
                 logging.info('Downloaded episode: %s', episode)
             else:

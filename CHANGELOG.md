@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] - 2018-12-18
+### Changed
+- Download torrents through requests library instead of Transmission itself
+
 ## [1.3.0] - 2018-11-27
 ### Changed
 - Added "on delete cascade" to foreign key
@@ -59,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - This is the initial version. It is still in development and has not been used in a production environment.
 
+[1.4.0]: https://github.com/danielkoster/argosd/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/danielkoster/argosd/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/danielkoster/argosd/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/danielkoster/argosd/compare/v1.1.0...v1.2.0
