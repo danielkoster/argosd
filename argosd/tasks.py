@@ -10,7 +10,7 @@ from argosd import settings
 from argosd.bots import TelegramBot
 from argosd.threading import Threaded
 from argosd.models import Show, Episode
-from argosd.torrentclient import Transmission
+from argosd.torrentclient import Transmission, CorruptTorrentException
 
 
 class BaseTask(Threaded):
@@ -191,20 +191,24 @@ class EpisodeDownloadTask(BaseTask):
             if datetime.now() > download_after or \
                     episode.quality >= settings.QUALITY_THRESHOLD:
 
-                torrentclient.download_episode(episode)
-                episode.is_downloaded = True
-                episode.save()
+                try:
+                    torrentclient.download_episode(episode)
+                    episode.is_downloaded = True
+                    episode.save()
 
-                # Send the user a notification about this episode
-                self._notify_user(episode)
+                    # Send the user a notification about this episode
+                    self._notify_user(episode)
 
-                # Delete all episodes from this show+season+episode
-                # so we don't download another quality variant.
-                to_delete = [item for item in episodes if
-                             item != episode and
-                             item.show == episode.show and
-                             item.season == episode.season and
-                             item.episode == episode.episode]
+                    # Delete all episodes from this show+season+episode
+                    # so we don't download another quality variant.
+                    to_delete = [item for item in episodes if
+                                 item != episode and
+                                 item.show == episode.show and
+                                 item.season == episode.season and
+                                 item.episode == episode.episode]
+                except CorruptTorrentException:
+                    # The torrent belonging to this episode is corrupt, delete it.
+                    to_delete = [episode]
 
                 for episode in to_delete:
                     episode.delete_instance()
