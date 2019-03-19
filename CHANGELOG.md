@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.5.0] - 2019-03-19
 ### Changed
 - Episodes with corrupt torrents are now deleted automatically
 
@@ -67,7 +69,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - This is the initial version. It is still in development and has not been used in a production environment.
 
-[Unreleased]: https://github.com/danielkoster/argosd/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/danielkoster/argosd/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/danielkoster/argosd/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/danielkoster/argosd/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/danielkoster/argosd/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/danielkoster/argosd/compare/v1.2.0...v1.2.1
