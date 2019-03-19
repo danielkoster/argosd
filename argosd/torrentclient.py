@@ -77,8 +77,8 @@ class Transmission(TorrentClient):
             # Silently continue when episode is already downloaded
             if e.message == 'Query failed with result "duplicate torrent".':
                 logging.info('Already downloaded episode %s', episode)
-            elif e.message == 'Query failed with result "invalid or corrupt torrent file".':
-                logging.info('Deleting corrupt torrent for episode %s', episode)
+            elif e.message == 'Query failed with result "invalid or corrupt torrent file".':  # noqa
+                logging.info('Corrupt torrent found for episode %s', episode)
                 raise CorruptTorrentException()
 
             raise TorrentClientException(str(e))

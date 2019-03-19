@@ -207,7 +207,7 @@ class EpisodeDownloadTask(BaseTask):
                                  item.season == episode.season and
                                  item.episode == episode.episode]
                 except CorruptTorrentException:
-                    # The torrent belonging to this episode is corrupt, delete it.
+                    # The torrent for to this episode is corrupt, delete it
                     to_delete = [episode]
 
                 for episode in to_delete:
